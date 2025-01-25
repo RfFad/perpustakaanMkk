@@ -27,6 +27,21 @@ if($action === 'hapus'){
     }
     $sql->close();
 }
+
+if(isset($_POST['update'])){
+    $nama_kelas = $_POST['nama_kelas'];
+    $tingkat = $_POST['tingkat'];
+    $id_kelas = $_POST['id_kelas'];
+            $query = "UPDATE kelas SET nama_kelas = ?, tingkat= ? WHERE id_kelas = ?";
+            $sql = $koneksi->prepare($query);
+            $sql->bind_param("ssi", $nama_kelas, $tingkat, $id_kelas);
+            if ($sql->execute()) {
+                $sukses = "Berhasil memperbarui data!";
+            } else {
+                $error = "Gagal memperbarui!";
+            }
+            $sql->close();
+}
 ?>
 
 
@@ -55,14 +70,14 @@ include '../../layout/header.php';
                     <tr>
                         <th style="width:1%;" class="text-center">No</th>
                         <th>Nama Kelas</th>
-                        <th style="width:10%">Action</th>
+                        <th style="width:20%">Action</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
                         <th style="width:1%;">No</th>
                         <th>Nama Kelas</th>
-                        <th style="width:10%">Action</th>
+                        <th style="width:20%">Action</th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -76,8 +91,8 @@ include '../../layout/header.php';
                         <td><?= $no ++ ?></td>
                         <td><?= $row['tingkat']?> <?= $row['nama_kelas'] ?></td>
                         <td>
-                            <a href="<?= BASE_URL ?>/view/kelas/insert.php?action=edit&id=<?= $row['id_kelas'] ?>" class="btn btn-circle btn-warning"><i class="far fa-edit"></i></a>
-                            <a href="#"  class="btn btn-circle btn-danger hapus-btn" data-idhapus = "<?= $row['id_kelas'] ?>"><i class="fas fa-trash"></i></a>
+                            <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= addslashes($row['nama_kelas']) ?>', '<?= addslashes($row['tingkat']) ?>', <?= $row['id_kelas'] ?>)" class="btn btn-primary"><i class="fas fa-edit"></i> edit</a>
+                            <a href="#"  class="btn btn-danger hapus-btn" data-idhapus = "<?= $row['id_kelas'] ?>"><i class="fas fa-trash"></i> hapus</a>
                         </td>
                     </tr>   
                     <?php } ?>
@@ -90,10 +105,51 @@ include '../../layout/header.php';
 </div>
 
 </div>
-<!-- /.container-fluid -->      
+<!-- /.container-fluid -->  
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update Data Jurusan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="">
+                <div class="modal-body">
+                    <input type="hidden" id="id_kelas" name="id_kelas">
+                    <div class="form-group">
+                        <label for="nama_kelas">Nama kelas</label>
+                        <input type="number" class="form-control" id="nama_kelas" name="nama_kelas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tingkatan">tingkatan</label>
+                        <select name="tingkat" id="tingkat" class="form-control" require>
+                            <option disabled selected>Selected</option>
+                            <option value="X">X</option>
+                            <option value="XI">XI</option>
+                            <option value="XII">XII</option>
+                          
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="update" class="btn btn-primary"><i class="fas fa-save"></i> Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>    
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script>
+    function showModalUpdate(nama_kelas, tingkat, id_kelas){
+        $('#nama_kelas').val(nama_kelas)
+        $('#tingkat').val(tingkat).attr('selected', true);
+        $('#id_kelas').val(id_kelas)
+        $('#updateModal').modal("show")
+    }
     $(document).ready(function(){
         
         $('.hapus-btn').on('click', function(){

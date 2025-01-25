@@ -13,40 +13,12 @@ if (isset($_GET['action'])) {
     $action = "";
 }
 
-if($action === 'edit'){
-    $id = $_GET['id'];
-    $query = "SELECT * FROM kelas WHERE id_kelas = ? ";
-    $sql = $koneksi->prepare($query);
-    $sql->bind_param("i", $id);
-    $sql->execute();
-    $result = $sql->get_result();
-    $r = $result->fetch_assoc();
 
-    $nama_kelas = $r['nama_kelas'];
-    $tingkat = $r['tingkat'];
-    if(!$nama_kelas){
-        $error = "Data tidak ditemukan";
-    }
-    $result->close();
-
-}
 
 if (isset($_POST['simpan'])) {
     $nama_kelas = $_POST['nama_kelas'];
     $tingkat = $_POST['tingkat'];
     if ($nama_kelas) {
-        if ($action === 'edit') {
-            $id = $_GET['id'];
-            $query = "UPDATE kelas SET nama_kelas = ?, tingkat= ? WHERE id_kelas = ?";
-            $sql = $koneksi->prepare($query);
-            $sql->bind_param("ssi", $nama_kelas, $tingkat, $id);
-            if ($sql->execute()) {
-                $sukses = "Berhasil memperbarui data!";
-            } else {
-                $error = "Gagal memperbarui!";
-            }
-            $sql->close();
-        } else {
             $query = "INSERT INTO kelas (nama_kelas, tingkat) VALUES (?,?)";
             $sql = $koneksi->prepare($query);
             $sql->bind_param("ss", $nama_kelas, $tingkat);
@@ -56,7 +28,7 @@ if (isset($_POST['simpan'])) {
                 $error = "Gagal menambahkan data!";
             }
             $sql->close();
-        }
+        
     } else {
         $error = "Pastikan semua form terisi!";
     }
@@ -76,9 +48,11 @@ include '../../layout/header.php';
             <form action="" method="post" id="simpan-form" enctype="multipart/form-data">
                 <div class="card-body">
                     <div class="form-group">
+                        <label for="nama_kelas">Nama kelas</label>
                         <input type="number" name="nama_kelas" class="form-control" value="<?= htmlspecialchars($nama_kelas) ?>" require>
                     </div>
                     <div class="form-group">
+                        <label for="">Tingkatan</label>
                         <select name="tingkat" id="" class="form-control" require>
                             <option disabled selected>Selected</option>
                             <option value="X" <?= htmlspecialchars($tingkat) === 'X' ? 'selected' : '' ?>>X</option>
