@@ -64,6 +64,19 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#bukuPages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>Buku</span>
+                </a>
+                <div id="bukuPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/buku/index.php">Data Buku</a>
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/buku/insert.php">Insert Buku</a>
+                    </div>
+                </div>
+          </li>
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#userPages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-user"></i>
@@ -72,7 +85,7 @@
                 <div id="userPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="<?= BASE_URL ?>/view/user/index.php">Data User</a>
-                        <a class="collapse-item" href="blank.html">Insert User</a>
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/user/insert.php">Insert User</a>
                     </div>
                 </div>
           </li>
