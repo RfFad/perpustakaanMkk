@@ -1,7 +1,21 @@
+
 <?php
-include '../../koneksi.php';
-session_start();
 $title = "Insert Kelas";
+include '../../layout/header.php';
+
+include '../../koneksi.php';
+
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
+    $urlBack = BASE_URL . "/view/dashboard/index.php";
+    echo '<script language="javascript">alert("Anda tidak bisa mengakses halaman ini, karena anda bukan admin!"); document.location="' . $urlBack . '"</script>';
+    exit;
+}
+
 $nama_kelas = "";
 $tingkat = "";
 $sukses = "";
@@ -23,9 +37,9 @@ if (isset($_POST['simpan'])) {
             $sql = $koneksi->prepare($query);
             $sql->bind_param("ss", $nama_kelas, $tingkat);
             if ($sql->execute()) {
-                $sukses = "Berhasil menambahkan data!";
+                $_SESSION['sukses'] = "Berhasil menambahkan data!";
             } else {
-                $error = "Gagal menambahkan data!";
+                $_SESSION['error'] = "Gagal menambahkan data!";
             }
             $sql->close();
         
@@ -33,10 +47,6 @@ if (isset($_POST['simpan'])) {
         $error = "Pastikan semua form terisi!";
     }
 }
-?>
-
-<?php
-include '../../layout/header.php';
 ?>
 
 <div class="container-fluid">
@@ -77,35 +87,32 @@ include '../../layout/header.php';
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<?php if ($sukses) { ?>
-<script>
-    $(document).ready(function () {
-        Swal.fire({
-            title: 'Berhasil!',
-            text: <?= json_encode($sukses) ?>,
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-        }).then(() => {
-            window.location.href = "<?= BASE_URL ?>/view/kelas/index.php";
+<?php if (!empty($_SESSION['sukses'])) { ?>
+    <script>
+        $(document).ready(function () {
+            Swal.fire({
+                title: 'Berhasil!',
+                text: <?= json_encode($_SESSION['sukses']) ?>,
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            })
         });
-    });
-</script>
+    </script>
+    <?php unset($_SESSION['sukses']); // Hapus pesan sukses dari session ?>
 <?php } ?>
-
-<?php if ($error) { ?>
-<script>
-    $(document).ready(function () {
-        Swal.fire({
-            title: 'Error!',
-            text: <?= json_encode($error) ?>,
-            icon: 'error',
-            showConfirmButton: true
-        }).then(()=>{
-            window.location.href = "<?= BASE_URL ?>/view/kelas/insert.php";
-        })
-    });
-</script>
+<?php if (!empty($_SESSION['error'])) { ?>
+    <script>
+        $(document).ready(function () {
+            Swal.fire({
+                title: 'Gagal!',
+                text: <?= json_encode($_SESSION['error']) ?>,
+                icon: 'error',
+                showConfirmButton: true
+            })
+        });
+    </script>
+    <?php unset($_SESSION['error']); // Hapus pesan sukses dari session ?>
 <?php } ?>
 <script>
     

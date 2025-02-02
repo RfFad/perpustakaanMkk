@@ -1,44 +1,50 @@
 <?php 
+
 include '../config.php';
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'];
+if(isset($_SESSION['username'])){
+        header('Location:../view/dashboard/index.php');
+}
+
+if(isset($_POST['login'])){
+    $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Query untuk memeriksa user
-    $query = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $query = $conn->prepare("SELECT * FROM admin WHERE username = ?");
+    $query->bind_param("s", $username);
+    $query->execute();
+    $result = $query->get_result();
 
-    if ($result->num_rows > 0) {
+    if($result->num_rows > 0){
         $user = $result->fetch_assoc();
-
-        // Verifikasi password
-        if (password_verify($password, $user['password'])) {
-            // Simpan data user ke session
-            $_SESSION['user_id'] = $user['id'];
+        
+        if(password_verify($password,$user['password'])){
+            $_SESSION['id_admin'] = $user['id_admin'];
+            $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
 
-            // Redirect berdasarkan role
-            if ($user['role'] === 'Admin') {
-                header("Location: admin/dashboard.php");
-            } elseif ($user['role'] === 'Operator') {
-                header("Location: operator/dashboard.php");
+          
+            if ($user['role'] === 'admin') {
+                header("Location: ../view/dashboard/index.php");
+            } elseif ($user['role'] === 'operator') {
+                header("Location: ../view/dashboard/index.php");
             } else {
                 echo "Role tidak dikenal.";
             }
             exit();
-        } else {
-            $error = "Password salah.";
+
+
+        }else{
+            $error = "Password Salah";
         }
-    } else {
-        $error = "Email tidak ditemukan.";
+        
+    }else{
+        $error = "Username Salah";
     }
-}
+}else
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -92,12 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <?php endif; ?>
                                     <form class="user" method="POST" action="">
                                         <div class="form-group">
-                                            <input type="email" name="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address..." required>
+                                            <input type="text" name="username" class="form-control form-control-user" aria-describedby="emailHelp" placeholder="Enter Username..." required>
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password" required>
                                         </div>
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        <button type="submit" name="login" class="btn btn-primary btn-user btn-block">
                                             Login
                                         </button>
                                     </form>

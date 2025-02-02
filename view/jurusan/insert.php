@@ -1,6 +1,15 @@
 <?php
 include '../../layout/header.php';
-
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
+    $urlBack = BASE_URL . "/view/dashboard/index.php";
+    echo '<script language="javascript">alert("Anda tidak bisa mengakses halaman ini, karena anda bukan admin!"); document.location="' . $urlBack . '"</script>';
+    exit;
+}
 // Database configuration
 $host = 'localhost';
 $username = 'root';
