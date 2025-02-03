@@ -1,5 +1,6 @@
 <?php include  '../../configPath.php' ?>
-<?php include  BASE_PATH.'/config.php' ?>
+<?php include  BASE_PATH.'/config.php'; 
+session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,12 +38,13 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-            </a>
+            <div class="d-flex flex-column align-items-center justify-content-center mt-3">
+                <img src="<?= BASE_URL ?>/asset/logo.png" style="width: 80px; margin-bottom: -10px;" alt="">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                    <div class="sidebar-brand-text mx-3">Perpustakaan Neper</div>
+                </a>
+            </div>
+
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -99,11 +101,11 @@
                 <div id="siswaPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="<?= BASE_URL ?>/view/siswa/index.php">Data Siswa</a>
-                        <a class="collapse-item" href="blank.html">Insert Siswa</a>
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/siswa/insert.php">Insert Siswa</a>
                     </div>
                 </div>
           </li>
-
+<?php if($_SESSION['role'] === 'admin') { ?> 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#jurusanPages"
                     aria-expanded="true" aria-controls="collapsePages">
@@ -117,21 +119,21 @@
                     </div>
                 </div>
           </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-ruler-combined"></i>
-                    <span>Kelas</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="<?= BASE_URL ?>/view/kelas/index.php">Data Kelas</a>
-                        <a class="collapse-item" href="<?= BASE_URL ?>/view/kelas/insert.php">Insert Kelas</a>
-                    </div>
+          <li class="nav-item">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+              aria-expanded="true" aria-controls="collapsePages">
+              <i class="fas fa-ruler-combined"></i>
+              <span>Kelas</span>
+            </a>
+            <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= BASE_URL ?>/view/kelas/index.php">Data Kelas</a>
+                    <a class="collapse-item" href="<?= BASE_URL ?>/view/kelas/insert.php">Insert Kelas</a>
                 </div>
-            </li>
-
+            </div>
+        </li>
+<?php }?>
+        
             
             
 
@@ -282,7 +284,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                        <img class="rounded-circle" src=""
                                             alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
@@ -326,9 +328,9 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $_SESSION['username'] ?></span>
                                 <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                    src="<?= BASE_URL ?>/asset/pp.jpg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

@@ -1,8 +1,21 @@
-<?php 
+<?php
+$title = 'Kelas';
+
+include '../../layout/header.php';
 include '../../koneksi.php';
-session_start();
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
+    $urlBack = BASE_URL . "/view/dashboard/index.php";
+    echo '<script language="javascript">alert("Anda tidak bisa mengakses halaman ini, karena anda bukan admin!"); document.location="' . $urlBack . '"</script>';
+    exit;
+}
 $sukses = "";
 $error = "";
+
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -17,13 +30,13 @@ if($action === 'hapus'){
     $sql = $koneksi->prepare($query);
     $sql->bind_param("i", $id);
     if($sql->execute()){
-        $sukses = "Berhasil menghapus data!";
+        $_SESSION['sukses'] = "Berhasil menghapus data!";
 
     }else {
-        $error = "Gagal menghapus data!";
+        $_SESSION['error']= "Gagal menghapus data!";
     }
     if(!$id){
-        $error = "Data tidak ditemukan!";
+        $_SESSION['error'] = "Data tidak ditemukan!";
     }
     $sql->close();
 }
@@ -36,20 +49,12 @@ if(isset($_POST['update'])){
             $sql = $koneksi->prepare($query);
             $sql->bind_param("ssi", $nama_kelas, $tingkat, $id_kelas);
             if ($sql->execute()) {
-                $sukses = "Berhasil memperbarui data!";
+                $_SESSION['sukses'] = "Berhasil memperbarui data!";
             } else {
-                $error = "Gagal memperbarui!";
+                $_SESSION['gagal'] = "Gagal memperbarui!";
             }
             $sql->close();
 }
-?>
-
-
-<?php
-$title = 'Kelas';
-
-include '../../layout/header.php';
-
 ?>
 
 <!-- DataTales Example -->
@@ -173,20 +178,32 @@ include '../../layout/header.php';
         
     })
 </script>
-<?php if ($sukses) { ?>
-<script>
-    $(document).ready(function () {
-        Swal.fire({
-            title: 'Berhasil!',
-            text: <?= json_encode($sukses) ?>,
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-        }).then(() => {
-            window.location.href = "<?= BASE_URL ?>/view/kelas/index.php";
+<?php if (!empty($_SESSION['sukses'])) { ?>
+    <script>
+        $(document).ready(function () {
+            Swal.fire({
+                title: 'Berhasil!',
+                text: <?= json_encode($_SESSION['sukses']) ?>,
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            })
         });
-    });
-</script>
+    </script>
+    <?php unset($_SESSION['sukses']); // Hapus pesan sukses dari session ?>
+<?php } ?>
+<?php if (!empty($_SESSION['error'])) { ?>
+    <script>
+        $(document).ready(function () {
+            Swal.fire({
+                title: 'Gagal!',
+                text: <?= json_encode($_SESSION['error']) ?>,
+                icon: 'error',
+                showConfirmButton: true
+            })
+        });
+    </script>
+    <?php unset($_SESSION['error']); // Hapus pesan sukses dari session ?>
 <?php } ?>
 <?php
 include '../../layout/footer.php';

@@ -1,6 +1,14 @@
 <?php
-session_start();
+$title = 'User';
+
+include '../../layout/header.php';
 include '../../koneksi.php';
+
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
 $error = [];
 $sukses = "";
 
@@ -63,18 +71,10 @@ if (isset($_POST['update'])) {
             $_SESSION['sukses'] = "Data berhasil diupdate!";
         } else {
             $_SESSION['error']['general'] = "Gagal memperbarui data!";
+            
         }
     }
-    header('Location: ' . $_SERVER['PHP_SELF']);
-    exit();
 }
-?>
-
-<?php
-$title = 'User';
-
-include '../../layout/header.php';
-
 ?>
 
 <!-- DataTales Example -->
@@ -150,7 +150,7 @@ include '../../layout/header.php';
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateModalLabel">Update Data Jurusan</h5>
+                <h5 class="modal-title" id="updateModalLabel">Update Data User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -240,12 +240,23 @@ include '../../layout/header.php';
                 icon: 'success',
                 timer: 2000,
                 showConfirmButton: false
-            }).then(() => {
-                window.location.href = "<?= BASE_URL ?>/view/user/index.php";
-            });
+            })
         });
     </script>
     <?php unset($_SESSION['sukses']); // Hapus pesan sukses dari session ?>
+<?php } ?>
+<?php if (!empty($_SESSION['error'])) { ?>
+    <script>
+        $(document).ready(function () {
+            Swal.fire({
+                title: 'Gagal!',
+                text: <?= json_encode($_SESSION['error']) ?>,
+                icon: 'error',
+                showConfirmButton: true
+            })
+        });
+    </script>
+    <?php unset($_SESSION['error']); // Hapus pesan sukses dari session ?>
 <?php } ?>
 <?php
 include '../../layout/footer.php';

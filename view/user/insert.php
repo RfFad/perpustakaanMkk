@@ -1,5 +1,18 @@
-<?php 
+<?php
+include '../../layout/header.php';
 include '../../koneksi.php';
+
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
+    $urlBack = BASE_URL . "/view/dashboard/index.php";
+    echo '<script language="javascript">alert("Anda tidak bisa mengakses halaman ini, karena anda bukan admin!"); document.location="' . $urlBack . '"</script>';
+    exit;
+}
+
 $error=[];
 $sukses = "";
 
@@ -39,9 +52,8 @@ if(isset($_POST['simpan'])){
         $query->close();
     }
 }
-?>
 
-<?php include '../../layout/header.php'; ?>
+?>
 <style>
 .is-invalid {
     border-color: red;
@@ -117,19 +129,31 @@ if(isset($_POST['simpan'])){
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<?php if ($sukses) { ?>
-<script>
-    $(document).ready(function () {
-        Swal.fire({
-            title: 'Berhasil!',
-            text: <?= json_encode($sukses) ?>,
-            icon: 'success',
-            //timer: 2000,
-            showConfirmButton: true
-        }).then(() => {
-            window.location.href = "<?= BASE_URL ?>/view/user/index.php";
+<?php if (!empty($_SESSION['sukses'])) { ?>
+    <script>
+        $(document).ready(function () {
+            Swal.fire({
+                title: 'Berhasil!',
+                text: <?= json_encode($_SESSION['sukses']) ?>,
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            })
         });
-    });
-</script>
+    </script>
+    <?php unset($_SESSION['sukses']); // Hapus pesan sukses dari session ?>
+<?php } ?>
+<?php if (!empty($_SESSION['error'])) { ?>
+    <script>
+        $(document).ready(function () {
+            Swal.fire({
+                title: 'Gagal!',
+                text: <?= json_encode($_SESSION['error']) ?>,
+                icon: 'error',
+                showConfirmButton: true
+            })
+        });
+    </script>
+    <?php unset($_SESSION['error']); // Hapus pesan sukses dari session ?>
 <?php } ?>
 <?php include '../../layout/footer.php'; ?>
