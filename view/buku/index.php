@@ -110,8 +110,9 @@ if(isset($_GET['action'])){
         $resultCount = $query->get_result();
         $rowCount = $resultCount->fetch_assoc();
         ?>
-        <span class="btn btn-primary">Jumlah Buku : <?= $rowCount['count'] ?></span>
-        <button type="button" class = "btn btn-warning" id="btn-filter">filter search</button>
+        <span class="btn btn-sm btn-primary">Jumlah Buku : <?= $rowCount['count'] ?></span>
+        <button type="button" class = "btn btn-sm btn-warning" id="btn-filter">filter search</button>
+        <a href="<?= BASE_URL ?>/view/buku/print_all.php" target="_blank" onclick="print(event)" class="btn btn-sm btn-success"><i class="fas fa-print"></i> Print Barcode</a>
         </div>
     </div>
 </div>
@@ -119,76 +120,95 @@ if(isset($_GET['action'])){
 
 <div class="row">
     <?php
-$query = "SELECT * FROM buku WHERE 1=1";
-$params = [];
-$types = "";
+    $query = "SELECT * FROM buku WHERE 1=1";
+    $params = [];
+    $types = "";
 
-if ($judul !== null) {
-    $query .= " AND judul LIKE ?";
-    $params[] = '%' . $judul . '%';
-    $types .= "s";
-}
+    if ($judul !== null) {
+        $query .= " AND judul LIKE ?";
+        $params[] = '%' . $judul . '%';
+        $types .= "s";
+    }
 
-if ($penerbit !== null) {
-    $query .= " AND penerbit LIKE ?";
-    $params[] = '%' . $penerbit . '%';
-    $types .= "s";
-}
-if ($barcode !== null) {
-    $query .= " AND barcode LIKE ?";
-    $params[] = '%' . $barcode . '%';
-    $types .= "s";
-}
-if ($pengarang !== null) {
-    $query .= " AND pengarang LIKE ?";
-    $params[] = '%' . $pengarang . '%';
-    $types .= "s";
-}
-if ($tahun_terbit !== null) {
-    $query .= " AND tahun_terbit LIKE ?";
-    $params[] = '%' . $tahun_terbit . '%';
-    $types .= "s";
-}
+    if ($penerbit !== null) {
+        $query .= " AND penerbit LIKE ?";
+        $params[] = '%' . $penerbit . '%';
+        $types .= "s";
+    }
 
-$query .= " ORDER BY id_buku DESC";
+    if ($barcode !== null) {
+        $query .= " AND barcode LIKE ?";
+        $params[] = '%' . $barcode . '%';
+        $types .= "s";
+    }
 
-$sql = $koneksi->prepare($query);
-if ($sql === false) {
-    die("Error preparing the query: " . $koneksi->error);
-}
+    if ($pengarang !== null) {
+        $query .= " AND pengarang LIKE ?";
+        $params[] = '%' . $pengarang . '%';
+        $types .= "s";
+    }
 
-if (!empty($params)) {
-    $sql->bind_param($types, ...$params);
-}
+    if ($tahun_terbit !== null) {
+        $query .= " AND tahun_terbit LIKE ?";
+        $params[] = '%' . $tahun_terbit . '%';
+        $types .= "s";
+    }
 
-$sql->execute();
-$result = $sql->get_result();
+    $query .= " ORDER BY id_buku DESC";
+    $sql = $koneksi->prepare($query);
 
-        while ($row = $result->fetch_array()){ 
+    if ($sql === false) {
+        die("Error preparing the query: " . $koneksi->error);
+    }
+
+    if (!empty($params)) {
+        $sql->bind_param($types, ...$params);
+    }
+
+    $sql->execute();
+    $result = $sql->get_result();
+
+    while ($row = $result->fetch_array()) { 
     ?>
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="row no-gutters">
-                    <div class="col-4">
-                        <img src="<?= BASE_URL ?>/asset/buku/<?= htmlspecialchars($row['foto']) ?>" alt="Naruto" class="img-fluid" style="height: 100%; object-fit: cover;">
+                    <div class="col-5">
+                        <img src="<?= BASE_URL ?>/asset/buku/<?= htmlspecialchars($row['foto']) ?>" 
+                             alt="Image" class="img-fluid" 
+                             style="width: 100%; height: 200px; object-fit: cover;">
                     </div>
-                    <div class="col-8">
-    <div class="card-body detail-buku">
-        <h5 class="card-title"><?= htmlspecialchars($row['judul']) ?></h5>
-        <ul style="list-style-type: none; padding-left: 0;">
-            <li><strong>Penerbit</strong>: <?= htmlspecialchars($row['penerbit']) ?></li>
-            <li><strong>Pengarang</strong>: <?= htmlspecialchars($row['pengarang']) ?></li>
-            <li><strong>Tahun Terbit</strong>: <?= htmlspecialchars($row['tahun_terbit']) ?></li>
-        </ul>
-        <button type="button" data-idhapus="<?= $row['id_buku'] ?>" class="btn btn-sm btn-primary" onclick="modalUpdate('<?= addslashes($row['judul']) ?>', '<?= addslashes($row['pengarang']) ?>', '<?= $row['penerbit'] ?>', '<?= $row['tahun_terbit'] ?>', '<?= $row['foto'] ?>', '<?= $row['barcode'] ?>', '<?= addslashes($row['id_buku']) ?>' )" data-toggle="modal"><i class="fas fa-info"></i> Detail</button>
-    </div>
-</div>
-
+                    <div class="col-7">
+                        <div class="card-body detail-buku">
+                            <h5 class="card-title"><?= htmlspecialchars($row['judul']) ?></h5>
+                            <ul style="list-style-type: none; padding-left: 0; font-size: 12px;">
+                                <li><strong>Penerbit</strong>: <?= htmlspecialchars($row['penerbit']) ?></li>
+                                <li><strong>Pengarang</strong>: <?= htmlspecialchars($row['pengarang']) ?></li>
+                                <li><strong>Tahun Terbit</strong>: <?= htmlspecialchars($row['tahun_terbit']) ?></li>
+                            </ul>
+                            <button type="button" data-idhapus="<?= $row['id_buku'] ?>" 
+                                    class="btn btn-sm btn-primary" 
+                                    onclick="modalUpdate('<?= addslashes($row['judul']) ?>', 
+                                                         '<?= addslashes($row['pengarang']) ?>', 
+                                                         '<?= addslashes($row['penerbit']) ?>', 
+                                                         '<?= addslashes($row['tahun_terbit']) ?>', 
+                                                         '<?= addslashes($row['foto']) ?>', 
+                                                         '<?= addslashes($row['barcode']) ?>', 
+                                                         '<?= addslashes($row['id_buku']) ?>')" 
+                                    data-toggle="modal">
+                                <i class="fas fa-edit"></i> Detail
+                            </button>
+                        </div>
+                    </div>
                 </div>    
             </div>
         </div>
-        <?php } $result->close() ?>
-    </div>
+    <?php 
+    } 
+    $result->close(); 
+    ?>
+</div>
+
 </div>
 
 
@@ -259,11 +279,20 @@ $result = $sql->get_result();
 </div>
 
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-arrow-left"></i> Close</button>
+<div class="modal-footer d-flex justify-content-between">
+    <!-- Tombol Close di kiri -->
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+        <i class="fas fa-arrow-left"></i> Close
+    </button>
+
+    <!-- Grup tombol di kanan -->
+    <div>
+        <a href="" class="btn btn-success" id="print-barcode" target="_blank" onclick="print(event)"><i class="fas fa-print"></i> Print Barcode</a>
         <a href="#" id="btn-hapus" class="btn btn-danger"><i class="fas fa-trash"></i> Hapus</a>
         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
-      </div>
+    </div>
+</div>
+
     </form>
     </div>
   </div>
@@ -272,6 +301,13 @@ $result = $sql->get_result();
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script>
+    function print(event) {
+        event.preventDefault();
+        var url = event.target.href;
+        var width = 700;
+        var height = 650;
+        window.open(url, '_blank', `width=${width},height=${height},top=100,left=200`);
+    }
     function modalUpdate(judul, pengarang, penerbit, tahun_terbit, foto, barcode, id_buku){
        
         $('#judul').val(judul)
@@ -284,6 +320,7 @@ $result = $sql->get_result();
         $('#coverBar').attr('src', `<?= BASE_URL ?>/asset/barcodes/${barcode}.png`)
         $("#codeBar").text(barcode)
         $("#hapusid").val(id_buku)
+        $("#print-barcode").attr('href', `<?= BASE_URL ?>/view/buku/print.php?id_buku=${id_buku}`);
         $('#modalUpdate').modal("show")
     }
    
@@ -360,6 +397,7 @@ $result = $sql->get_result();
     <?php unset($_SESSION['error']); // Hapus pesan sukses dari session ?>
 <?php } ?>
 <script>
+    
   document.querySelector('.custom-file-input').addEventListener('change', function (e) {
     // Dapatkan nama file yang dipilih
     var fileName = e.target.files[0].name;

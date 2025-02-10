@@ -62,18 +62,27 @@
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
      <!-- Buttons Extension JS -->
 
     <script>
+    $('.selectpicker').selectpicker();
+    
         $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "lengthChange": true,
       "lengthMenu": [5, 10, 25, 50, 100],
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    </script>
 
+    $("#example2").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "lengthChange": true,
+      "lengthMenu": [5, 10, 25, 50, 100],
+    });
+    </script>
+<?php ob_end_flush(); ?>
 </body>
 
 </html>

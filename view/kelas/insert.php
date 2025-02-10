@@ -37,9 +37,11 @@ if (isset($_POST['simpan'])) {
             $sql = $koneksi->prepare($query);
             $sql->bind_param("ss", $nama_kelas, $tingkat);
             if ($sql->execute()) {
-                $_SESSION['sukses'] = "Berhasil menambahkan data!";
+                header('Location: index.php');
+                return $_SESSION['sukses'] = "Berhasil menambahkan data!";
             } else {
-                $_SESSION['error'] = "Gagal menambahkan data!";
+                header('Location: index.php');
+                return $_SESSION['error'] = "Gagal menambahkan data!";
             }
             $sql->close();
         

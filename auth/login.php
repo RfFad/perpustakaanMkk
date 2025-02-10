@@ -70,18 +70,18 @@ if(isset($_POST['login'])){
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            height: 50%;
-            min-height: 50vh;
+            height: 100%;
+            min-height: 60vh;
         }
     </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body class="bg-gradient-white">
     <div class="container">
         <!-- Outer Row -->
         <div class="row justify-content-center">
             <div class="col-xl-10 col-lg-12 col-md-9">
-                <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card o-hidden border-0 shadow my-5">
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <div class="row">
@@ -92,10 +92,11 @@ if(isset($_POST['login'])){
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
                                     <?php if (isset($error)): ?>
-                                        <div class="alert alert-danger" role="alert">
+                                        <div class="alert alert-danger d-flex align-items-center" style="height: 35px; font-size: 15px;" role="alert">
                                             <?= $error ?>
                                         </div>
                                     <?php endif; ?>
+
                                     <form class="user" method="POST" action="">
                                         <div class="form-group">
                                             <input type="text" name="username" class="form-control form-control-user" aria-describedby="emailHelp" placeholder="Enter Username..." required>

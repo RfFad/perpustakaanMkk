@@ -17,7 +17,7 @@ include '../../layout/header.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2">
-                        <div style="border: 2px dashed #ccc; width: 180px; height: 200px; display: flex; justify-content: center; align-items: center;">
+                        <div class="" style="border: 2px dashed #ccc; width: 170px; height: 200px; display: flex; justify-content: center; align-items: center;">
                             <img src="" id="preview" alt="Preview Foto" style="display: none; max-width: 100%; max-height: 100%;">
                         </div>
                         <div class="custom-file mt-2">
@@ -62,7 +62,7 @@ include '../../layout/header.php';
                     
                 </div>
                 <div class="card-footer">
-                    <a href="<?= BASE_URL ?>/view/buku/index.php" class="btn btn-secondary">
+                    <a href="<?= BASE_URL ?>/view/siswa/index.php" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Kembali
                     </a>
                     <button type="submit" name="simpan" class="btn btn-primary">

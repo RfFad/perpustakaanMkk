@@ -1,25 +1,27 @@
-<?php include '../../config.php' ?>
-
+<?php include '../../config.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kartu Perpustakaan</title>
+  <title>Cetak Semua Kartu Perpustakaan</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 kartu per baris */
+    gap: 10px;
+    width: 100%;
+    page-break-before: always;
   }
 
-  .foldable-card {
+    .foldable-card {
     width: 900px;
     height: 250px;
     display: flex;
@@ -167,35 +169,33 @@
   }
 
   .foldable-card {
-    width: 20cm; /* Lebar kartu */
-    height: 7cm; /* Tinggi kartu */
+    width: 20cm; 
+    height: 7cm; 
     border: none;
     box-shadow: none;
     page-break-inside: avoid;
-    position: absolute;
-
-    /* Atur posisi kartu saat cetak */
-    top: 1cm; /* Beri jarak dari atas */
-    left: 1cm; /* Beri jarak dari kiri */
-
-    /* Pastikan warna dan background tetap terlihat */
+    
+    /* Pastikan background tidak hilang */
     background: url('background-image.jpg') no-repeat center center !important;
     background-size: cover !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  /* Atur margin cetak agar tidak memotong kartu */
-  @page {
-    margin: 1cm; /* Beri jarak dari pinggiran kertas */
+    -webkit-print-color-adjust: exact; /* Untuk Safari & Chrome */
+    print-color-adjust: exact; /* Untuk browser lain */
   }
 }
-
 
 </style>
 
 </head>
 <body>
+    <div class="container">
+<?php
+          
+          include '../../koneksi.php';
+          $query = $koneksi->prepare("SELECT s.*, k.nama_kelas, k.tingkat, j.singkatan FROM siswa s JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan");
+          $query->execute();
+          $result = $query->get_result();
+
+          while($row = $result->fetch_array()){ ?>
   <div class="foldable-card">
     <!-- Bagian Tampilan Depan -->
     <div class="front">
@@ -210,16 +210,7 @@
         </div>
       </div>
       <div class="profile-section">
-      <?php
-          
-          include '../../koneksi.php';
-          $nis = $_GET['nis'];
-          $query = $koneksi->prepare("SELECT s.*, k.nama_kelas, k.tingkat, j.singkatan FROM siswa s JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE nis = ?");
-          $query->bind_param("i", $nis);
-          $query->execute();
-          $result = $query->get_result();
-
-          while($row = $result->fetch_array()){ ?>
+      
         <img src="<?= $row['foto'] ? BASE_URL . '/asset/foto_siswa/' . $row['foto'] : BASE_URL . '/asset/profile.jpg' ?>" alt="Foto Profil" class="profile-photo">
         <div class="member-info">
           
@@ -228,9 +219,7 @@
           <p><strong>Kelas:</strong> <?= $row['tingkat'] ?> <?= $row['singkatan'] ?> <?= $row['nama_kelas'] ?></p>
           <p><strong>Alamat:</strong> <?= $row['alamat'] ?></p>
           <p><strong>Telepon:</strong> <?= $row['telepon'] ?></p>
-          <?php
-          }
-          ?>
+         
         </div>
       </div>
     </div>
@@ -251,14 +240,17 @@
       </div>
     </div>
   </div>
-
+  <?php
+          }
+          ?>
+          </div>
   <script>
-  window.onload = function() {
-    window.print(); // Otomatis mencetak halaman
-    setTimeout(function() {
-      window.close(); // Menutup jendela setelah print selesai
-    }, 2000); // Waktu tunggu agar print dapat diproses sebelum jendela tertutup
-  };
+ window.onload = function(){
+  window.print();
+  setTimeout(function(){
+    window.close();
+  }, 2000)
+ }
 </script>
 
 </body>

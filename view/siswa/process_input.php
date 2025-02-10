@@ -45,7 +45,7 @@ if ($count > 0) {
 $query = $koneksi->prepare("INSERT INTO siswa (nama, nis, barcode, id_kelas, id_jurusan, alamat, telepon, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 $query->bind_param("sssiisss", $nama, $nis, $barcodeValue, $id_kelas, $id_jurusan, $alamat, $telepon, $foto);
 if($query->execute()){
-    $_SESSION['sukses'] = "Berhasil menambahkan buku!";
+    $_SESSION['sukses'] = "Berhasil menambahkan data siswa!";
     header('Location: index.php');
     exit();
 } else {

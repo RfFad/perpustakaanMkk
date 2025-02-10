@@ -1,5 +1,6 @@
 <?php include  '../../configPath.php' ?>
 <?php include  BASE_PATH.'/config.php'; 
+ob_start();
 session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +27,7 @@ session_start(); ?>
 
     <!-- Custom styles for this page -->
     <link href="<?= BASE_URL ?>../public/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
 
 </head>
 
@@ -65,6 +67,19 @@ session_start(); ?>
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#peminjamanPages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fa fa-address-book ml-1"></i>
+                    <span>Peminjaman</span>
+                </a>
+                <div id="peminjamanPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/peminjaman/index.php">Data Peminjaman</a>
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/peminjaman/scan.php">Insert Peminjaman</a>
+                    </div>
+                </div>
+          </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#bukuPages"
                     aria-expanded="true" aria-controls="collapsePages">
@@ -328,7 +343,7 @@ session_start(); ?>
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $_SESSION['username'] ?></span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= isset($_SESSION['username']) ? $_SESSION['username'] : 'anonim' ?></span>
                                 <img class="img-profile rounded-circle"
                                     src="<?= BASE_URL ?>/asset/pp.jpg">
                             </a>

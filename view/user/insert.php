@@ -68,7 +68,7 @@ if(isset($_POST['simpan'])){
     <div class="d-flex justify-content-center vh-50">
         <div class="card shadow mb-4" style="width:800px">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Insert Kelas</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Insert User</h6>
             </div>
             <form action="" method="post" id="simpan-form" enctype="multipart/form-data">
                 <div class="card-body">

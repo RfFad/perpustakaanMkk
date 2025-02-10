@@ -30,13 +30,16 @@ if($action === 'hapus'){
     $sql = $koneksi->prepare($query);
     $sql->bind_param("i", $id);
     if($sql->execute()){
-        $_SESSION['sukses'] = "Berhasil menghapus data!";
+        header('Location: index.php');
+        return $_SESSION['sukses'] = "Berhasil menghapus data!";
 
     }else {
-        $_SESSION['error']= "Gagal menghapus data!";
+        header('Location: index.php');
+        return $_SESSION['error']= "Gagal menghapus data!";
     }
     if(!$id){
-        $_SESSION['error'] = "Data tidak ditemukan!";
+        header('Location: index.php');
+        return $_SESSION['error'] = "Data tidak ditemukan!";
     }
     $sql->close();
 }

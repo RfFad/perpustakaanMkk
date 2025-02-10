@@ -54,6 +54,7 @@ if($action === 'hapus'){
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <a href="<?= BASE_URL ?>/view/siswa/insert.php" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> tambah data</a>
+        <a href="<?= BASE_URL ?>/view/siswa/print_all.php" target="_blank" onclick="openPrintWindow(event)" class="btn btn-sm btn-primary"><i class="fas fa-print"></i> Print Card All</a>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -190,6 +191,7 @@ if($action === 'hapus'){
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="" id="print" class="btn btn-success" target="_blank" onclick="openPrintWindow(event)"><i class = "fas fa-print"></i> Print card</a>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Save changes
                     </button>
@@ -214,11 +216,18 @@ if($action === 'hapus'){
         $('#kelas').val(id_kelas).attr('selected', true);
         $('#jurusan').val(id_jurusan).attr('selected', true);
         $('#telepon').val(telepon);
+        $('#print').attr('href', `<?= BASE_URL ?>/view/siswa/print.php?nis=${nis}`)
         $('#id_siswa').val(id_siswa);
         $('#barcode').val(barcode);
         $('#codeBar').text(barcode);
-        $('#coverBar').attr('src', `<?= BASE_URL ?>/asset/barcode_siswa/${barcode}.png`);
+        if(!foto){
+        $('#preview').attr('src', `<?= BASE_URL ?>/asset/profile.jpg`);
+
+        }else{
         $('#preview').attr('src', `<?= BASE_URL ?>/asset/foto_siswa/${foto}`);
+
+        }
+        $('#coverBar').attr('src', `<?= BASE_URL ?>/asset/barcode_siswa/${barcode}.png`);
         $('textarea[name="alamat"]').val(alamat);
         $('#updateModal').modal("show")
     }
@@ -289,8 +298,17 @@ if($action === 'hapus'){
     </script>
     <?php unset($_SESSION['error']); // Hapus pesan sukses dari session ?>
 <?php } ?>
-
 <script>
+  function openPrintWindow(event) {
+    event.preventDefault(); // Mencegah link membuka di tab biasa
+    var url = event.target.href;
+    var width = 950; // Sesuaikan ukuran dengan kartu
+    var height = 400;
+    window.open(url, '_blank', `width=${width},height=${height},top=100,left=200`);
+  }
+</script>
+<script>
+    
   document.querySelector('.custom-file-input').addEventListener('change', function (e) {
     // Dapatkan nama file yang dipilih
     var fileName = e.target.files[0].name;
