@@ -147,6 +147,18 @@ session_start(); ?>
                 </div>
             </div>
         </li>
+        <li class="nav-item">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#DataPages"
+              aria-expanded="true" aria-controls="collapsePages">
+              <i class="fas fa-school"></i>
+              <span>Data Sekolah</span>
+            </a>
+            <div id="DataPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= BASE_URL ?>/view/profile/profile.php">Data Sekolah</a>
+                </div>
+            </div>
+        </li>
 <?php }?>
         
             
