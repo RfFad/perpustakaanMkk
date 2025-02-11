@@ -18,7 +18,22 @@ if(isset($_POST['input_pinjam'])){
         $_SESSION['error'] = "Gagal meminjam buku!";
         header("Location: pinjam.php");
     }
+    $query->close();
 }
-
-
+if(isset($_POST['update_pinjam'])){
+    $id = $_POST['id'];
+    $id_buku = $_POST['id_buku'];
+    $tanggal_kembali = $_POST['tanggal_kembali'];
+    $status = $_POST['status'];
+    $query = $koneksi->prepare("UPDATE peminjaman SET id_buku = ?, tanggal_kembali = ?, status = ? WHERE id_peminjaman = ?");
+    $query->bind_param("issi", $id_buku, $tanggal_kembali, $status, $id);
+    if($query->execute()){
+        $_SESSION['sukses'] = "Berhasil mengupdate data peminjaman!";
+        header("Location: index.php");
+    }else{
+        $_SESSION['error'] = "Gagal mengupdate data peminjaman!";
+        header("Location: index.php");
+    }
+    $query->close();
+}
 ?>

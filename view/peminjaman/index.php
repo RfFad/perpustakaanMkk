@@ -61,6 +61,11 @@ if(isset($_POST['update'])){
            
             $sql->close();
 }
+//update status
+$query = $koneksi->prepare("UPDATE peminjaman SET status = 'Melebihi waktu' WHERE tanggal_kembali < CURDATE() AND status='Dipinjam'");
+$query->execute();
+$queryStatus = $koneksi->prepare("UPDATE peminjaman SET status = 'Dipinjam' WHERE tanggal_kembali > CURDATE() AND status='Melebihi waktu'");
+$queryStatus->execute();
 ?>
 <style>
   .text-center.profile-photo {
@@ -148,7 +153,7 @@ if(isset($_POST['update'])){
                             </span>
                         </td>
                         <td>
-                            <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= $row['id_siswa'] ?>', '<?= $row['nis'] ?>', '<?= $row['telepon'] ?>', '<?= $row['nama_siswa'] ?>', '<?= $row['foto_siswa'] ?>', '<?= $row['nama_kelas'] ?>', '<?= $row['barcode_buku'] ?>', '<?= $row['tanggal_kembali'] ?>')" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> edit</a>
+                            <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= $row['id_siswa'] ?>', '<?= $row['id_peminjaman'] ?>', '<?= $row['nis'] ?>', '<?= $row['telepon'] ?>', '<?= $row['nama_siswa'] ?>', '<?= $row['foto_siswa'] ?>', '<?= $row['nama_kelas'] ?>', '<?= $row['barcode_buku'] ?>', '<?= $row['tanggal_kembali'] ?>', '<?= $row['status'] ?>')" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> edit</a>
                             <a href="#"  class="btn btn-danger btn-sm hapus-btn" data-idhapus = "<?= $row['id_peminjaman'] ?>"><i class="fas fa-trash"></i> hapus</a>
                         </td>
                     </tr>   
@@ -172,7 +177,7 @@ if(isset($_POST['update'])){
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" action="">
+            <form method="POST" action="input_pinjam.php">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-3">
@@ -247,6 +252,7 @@ if(isset($_POST['update'])){
                                             </div>
                                             <div class="col-md-12">
                                                 <input type="hidden" name="id_buku" class="form-control">
+                                                <input type="hidden" name="id" class="form-control">
                                                 <input type="hidden" name="id_admin" class="form-control" value="<?= $_SESSION['id_admin'] ?>">
                                                 <div class="row">
                                                   <div class="col-md-6">
@@ -258,8 +264,11 @@ if(isset($_POST['update'])){
                                                   <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="">Status</label>
-                                                    <select name="" id="" class="form-control">
-                                                        <option value="">Dipinjam</option>
+                                                    <select name="status" id="status" class="form-control">
+                                                        <option disabled selected>-- Select Status --</option>
+                                                        <option value="Dipinjam">Dipinjam</option>
+                                                        <option value="Dikembalikan">Dikembalikan</option>
+                                                        <option value="Melebihi waktu">Melebihi waktu</option>
                                                     </select>
                                                 </div>
                                                    </div>
@@ -275,7 +284,7 @@ if(isset($_POST['update'])){
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="update" class="btn btn-primary"><i class="fas fa-save"></i> Save changes</button>
+                    <button type="submit" name="update_pinjam" class="btn btn-primary"><i class="fas fa-save"></i> Save changes</button>
                 </div>
             </form>
         </div>
@@ -307,11 +316,13 @@ if(isset($_POST['update'])){
         },
       });
     }
-    function showModalUpdate(id_kelas, nis, telepon, nama_siswa, foto_siswa, kelas, barcode_buku, tanggal_kembali){
+    function showModalUpdate(id_kelas, id_peminjaman, nis, telepon, nama_siswa, foto_siswa, kelas, barcode_buku, tanggal_kembali, status){
         $('#nis').text(nis);
         $('#telepon').text(telepon);
+        $("input[name='id']").val(id_peminjaman);
         $('#nama_siswa').text(nama_siswa);
         $('#nama_kelas').text(kelas);
+        $('#status').val(status).trigger('change')
         $("input[name='tanggal_kembali']").val(tanggal_kembali);
         $("#barcodeSelected").val(barcode_buku).trigger('change');
         dataBuku(barcode_buku)
@@ -323,6 +334,12 @@ if(isset($_POST['update'])){
         $("#updateModal").modal("show")
     }
     $(document).ready(function(){
+     
+    // $.ajax({
+    //     url: 'update_status.php',
+    //     type : 'GET', 
+    //     dataType : 'json'
+    // })
         $('#gantiBuku').on('click', function(){
       $('.bukuData').slideDown(400, function(){
         $('.bukuData').addClass('d-none')
