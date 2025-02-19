@@ -1,7 +1,10 @@
 <?php include  '../../configPath.php' ?>
 <?php include  BASE_PATH.'/config.php'; 
 ob_start();
-session_start(); ?>
+session_start();
+session_regenerate_id(true);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

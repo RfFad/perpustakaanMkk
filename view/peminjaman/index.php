@@ -23,6 +23,11 @@ if (isset($_GET['action'])) {
     $action = "";
 }
 
+if(isset($_GET['status'])){
+    $status = $_GET['status'];
+}else{
+    $status = "";
+}
 
 if($action === 'hapus'){
     $url = BASE_URL . "/view/peminjaman/index.php";
@@ -104,14 +109,32 @@ $queryStatus->execute();
 <h1 class="h3 mb-2 text-gray-800">Data Peminjaman</h1>
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <a href="<?= BASE_URL ?>/view/peminjaman/scan.php" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> tambah data</a>
+    <div class="card-header py-3 d-flex justify-content-between">
+        <a href="<?= BASE_URL ?>/view/peminjaman/scan.php" class="btn btn-sm btn-success d-flex align-items-center"><i class="fas fa-plus mr-2"></i> tambah data</a>
+        <div class="button-data">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link <?= $status === '' ? 'active' : '' ?> " href="index.php">Hari ini</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= $status === 'semua' ? 'active' : '' ?>" href="index.php?status=semua">Semua</a>
+                </li>
+                <li class="nav-item dropdown d-flex align-items-center ">
+                    <a class="nav-link dropdown-toggle <?= $status === 'dipinjam' || $status === 'dikembalikan' || $status === 'melebihiwaktu'  ? 'active' : '' ?>" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Status</a>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="index.php?status=dipinjam">Dipinjam</a>
+                    <a class="dropdown-item" href="index.php?status=dikembalikan">Dikembalikan</a>
+                    <a class="dropdown-item" href="index.php?status=melebihiwaktu">Melebihi waktu</a>
+                </li>
+            </ul>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered  table-striped tabelData" id="example1" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
+            <table class="table table-bordered   table-striped tabelData" id="example1" width="100%" cellspacing="0">
+                <thead class= "thead-dark">
+                    
+                    <tr class="text-center" >
                     <th style="width:1%;">No</th>
                         <th>Nama Peminjam</th>
                         <th>No Tlp</th>
@@ -119,7 +142,7 @@ $queryStatus->execute();
                         <th>Tanggal Peminjaman</th>
                         <th>Tanggal Pengembalian</th>
                         <th>Status</th>
-                        <th style="width:20%">Action</th>
+                        <th style="width:10%">Action</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -131,33 +154,47 @@ $queryStatus->execute();
                         <th>Tanggal Peminjaman</th>
                         <th>Tanggal Pengembalian</th>
                         <th>Status</th>
-                        <th style="width:20%">Action</th>
+                        <th style="width:17%">Action</th>
                     </tr>
                 </tfoot>
                 <tbody>
                     <?php 
                     $query = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan  order by pj.id_peminjaman DESC";
-                    $sql = mysqli_query($koneksi, $query);
+                    if(!isset($_GET['status'])){
+                        $queryData = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE DATE(pj.tanggal_pinjam) = CURDATE() OR DATE(pj.tanggal_kembali) = CURDATE() order by pj.id_peminjaman DESC";
+                    }else if($_GET['status'] === 'dipinjam'){
+                        $queryData = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE pj.status = 'Dipinjam'  order by pj.id_peminjaman DESC";
+                    }else if($_GET['status'] === 'dikembalikan'){
+                        $queryData = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE pj.status = 'Dikembalikan'  order by pj.id_peminjaman DESC";
+                    }else if($_GET['status'] === 'melebihiwaktu'){
+                        $queryData = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE pj.status = 'Melebihi waktu'  order by pj.id_peminjaman DESC";
+                    }else if($_GET['status'] === 'semua'){
+                        $queryData = $query;
+                    }
+
+                    $queryKonek = $koneksi->prepare($queryData);
+                    $queryKonek->execute();
+                    $result = $queryKonek->get_result();
                     $no = 1;
-                    while($row = mysqli_fetch_array($sql)){
+                    while($row = $result->fetch_array()){
                      ?>
                       <tr>
                         <td><?= $no ++ ?></td>
-                        <td><?= $row['nama_siswa'] ?></td>
-                        <td><?= $row['telepon'] ?></td>
-                        <td><?= $row['nama_buku'] ?></td>
-                        <td><?= $row['tanggal_pinjam'] ?></td>
-                        <td><?= $row['tanggal_kembali'] ?></td>
+                        <td><?= htmlspecialchars($row['nama_siswa']) ?></td>
+                        <td><?= htmlspecialchars($row['telepon']) ?></td>
+                        <td><?= htmlspecialchars($row['nama_buku']) ?></td>
+                        <td><?= htmlspecialchars($row['tanggal_pinjam']) ?></td>
+                        <td><?= htmlspecialchars($row['tanggal_kembali']) ?></td>
                         <td><span class="badge <?= $row['status'] === 'Dipinjam' ? 'badge-warning' : ($row['status'] === 'Dikembalikan' ? 'badge-success' : 'badge-danger') ?>">
                             <?= $row['status'] ?>
                             </span>
                         </td>
-                        <td>
+                        <td class="text-center">
                             <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= $row['id_siswa'] ?>', '<?= $row['id_peminjaman'] ?>', '<?= $row['nis'] ?>', '<?= $row['telepon'] ?>', '<?= $row['nama_siswa'] ?>', '<?= $row['foto_siswa'] ?>', '<?= $row['nama_kelas'] ?>', '<?= $row['barcode_buku'] ?>', '<?= $row['tanggal_kembali'] ?>', '<?= $row['status'] ?>')" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> edit</a>
                             <a href="#"  class="btn btn-danger btn-sm hapus-btn" data-idhapus = "<?= $row['id_peminjaman'] ?>"><i class="fas fa-trash"></i> hapus</a>
                         </td>
                     </tr>   
-                    <?php } ?>
+                    <?php } $result->close() ?>
                    
                    
                 </tbody>

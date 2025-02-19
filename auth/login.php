@@ -3,9 +3,20 @@
 include '../config.php';
 session_start();
 
+if(empty($_SESSION['csrf_token'])){
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if(isset($_SESSION['username'])){
         header('Location:../view/dashboard/index.php');
 }
+
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    if(!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']){
+        die("CSRF token tidak valid!");
+    }
+}
+
 
 if(isset($_POST['login'])){
     $username = $_POST['username'];
@@ -98,6 +109,7 @@ if(isset($_POST['login'])){
                                     <?php endif; ?>
 
                                     <form class="user" method="POST" action="">
+                                        <input type="hidden" name="csrf_token" value = "<?= $_SESSION['csrf_token'] ?>" >
                                         <div class="form-group">
                                             <input type="text" name="username" class="form-control form-control-user" aria-describedby="emailHelp" placeholder="Enter Username..." required>
                                         </div>

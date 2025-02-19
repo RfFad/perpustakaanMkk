@@ -2,7 +2,7 @@
 $title = "Scan";
 include '../../koneksi.php';
 include '../../layout/header.php';
-
+if(!isset($_SESSION['']))
 $action = isset($_GET['action']) ? $_GET['action'] : "";
 
 ?>
@@ -19,6 +19,32 @@ $action = isset($_GET['action']) ? $_GET['action'] : "";
     background-color: #e3f2fd;
   }
 </style>
+<style>
+  .text-center.profile-photo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-status-border {
+  width: 110px;
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  padding: 5px;
+  position: relative;
+}
+
+.profile-user-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+}
+</style>
 
 <div class="container-fluid">
   <form action="input_pinjam.php" method="POST">
@@ -33,38 +59,34 @@ if ($action === "pinjam" && isset($_GET['nis'])) {
       $query->bind_param("s", $nis); $query->execute(); $result_siswa =
       $query->get_result(); if ($result_siswa->num_rows > 0) { $row =
       $result_siswa->fetch_assoc(); ?>
-
-      <div class="col-md-3">
-        <div class="card shadow border-bottom-primary">
-          <div class="card-body box-profile">
-            <div
-              class="text-center"
-              style="width: 100%; height: 220px; overflow: hidden"
-            >
-              <img
-                class="profile-user-img img-fluid"
-                src="<?= $row['foto'] ? BASE_URL . '/asset/foto_siswa/' . $row['foto'] : BASE_URL . '/asset/profile.jpg' ?>"
-                alt="User profile picture"
-                style="width: 100%; height: 100%; object-fit: cover"
-              />
-            </div>
-            <button type="button" class="btn btn-primary btn-block mt-3">
-              <?= htmlspecialchars($row['nama']) ?>
-            </button>
-            <button type="button" class="btn btn-primary btn-block mt-3">
-              <?= htmlspecialchars($row['tingkat']) ?>
-              <?= htmlspecialchars($row['singkatan']) ?>
-              <?= htmlspecialchars($row['nama_kelas']) ?>
-            </button>
-            <input type="hidden" name="id_siswa" class="form-control" value="<?= htmlspecialchars($row['id_siswa']) ?>">
-          </div>
-        </div>
-      </div>
+<!-- Data Siswa -->
+<div class="col-md-3">
+                            <div class="card border-bottom-primary">
+                                <div class="card-body box-profile">
+                                    <div class="text-center profile-photo">
+                                        <div class="profile-status-border bg-secondary">
+                                            <img class="profile-user-img img-fluid rounded-circle" src="<?= $row['foto'] ? BASE_URL . '/asset/foto_siswa/' . $row['foto'] : BASE_URL . '/asset/profile.jpg' ?>" id="foto_siswa" alt="User profile picture">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="id_siswa" value="<?= htmlspecialchars($row['id_siswa']) ?>">
+                                    <h4 class="profile-username text-center" id="nama_siswa">  <?= htmlspecialchars($row['nama']) ?> </h4>
+                                    <p class="text-muted text-center" id="nis"><?= htmlspecialchars($row['nis']) ?></p>
+                                    <ul class="list-group list-group-unbordered mb-3">
+                                        <li class="list-group-item">
+                                            <b>Kelas</b> <a class="float-right" id="nama_kelas"> <?= htmlspecialchars($row['tingkat']) ?> <?= htmlspecialchars($row['singkatan']) ?> <?= htmlspecialchars($row['nama_kelas']) ?></a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Tlp</b> <a class="float-right" id="telepon"> <?= htmlspecialchars($row['telepon']) ?></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+    <!-- End Siswa -->
 
       <?php 
     } else {
         echo "<div class='col-md-12'><div class='alert alert-danger'>Siswa tidak ditemukan!</div></div>";} } ?>
-
     <div class="col-md-9">
       <div class="card shadow card-primary border-bottom-primary card-outline">
         <div class="card-body">

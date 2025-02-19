@@ -2,7 +2,7 @@
 <?php
 $title = 'Dashboard';
 
-
+include '../../koneksi.php';
 include '../../layout/header.php';
 
 if(!isset($_SESSION['username'])){
@@ -23,6 +23,7 @@ if(!isset($_SESSION['username'])){
 </div>
 
 <!-- Content Row -->
+ 
 <div class="row">
 
     <!-- Earnings (Monthly) Card Example -->
@@ -34,8 +35,14 @@ if(!isset($_SESSION['username'])){
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                         DATA BUKU
                     </div>
+                    <?php
+                        $query = $koneksi->prepare("SELECT COUNT(*) AS count_buku FROM buku");
+                        $query->execute();
+                        $result = $query->get_result();
+                        $getdata = $result->fetch_assoc();
+                        ?>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        $40,000
+                        <?= $getdata['count_buku'] ?>
                     </div>
                 </div>
                 <div class="col-auto">
@@ -56,8 +63,14 @@ if(!isset($_SESSION['username'])){
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                         DATA SISWA
                     </div>
+                    <?php
+                        $querySiswa = $koneksi->prepare("SELECT COUNT(*) AS count_siswa FROM siswa");
+                        $querySiswa->execute();
+                        $resultSiswa = $querySiswa->get_result();
+                        $getSiswa = $resultSiswa->fetch_assoc();
+                        ?>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        $40,000
+                        <?= $getSiswa['count_siswa']  ?>
                     </div>
                 </div>
                 <div class="col-auto">
@@ -77,8 +90,14 @@ if(!isset($_SESSION['username'])){
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                         DATA JURUSAN
                     </div>
+                    <?php
+                        $queryjurusan = $koneksi->prepare("SELECT COUNT(*) AS count_jurusan FROM jurusan");
+                        $queryjurusan->execute();
+                        $resultjurusan = $queryjurusan->get_result();
+                        $getjurusan = $resultjurusan->fetch_assoc();
+                        ?>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        $40,000
+                        <?= $getjurusan['count_jurusan'] ?>
                     </div>  
                 </div>
                 <div class="col-auto">
@@ -98,8 +117,14 @@ if(!isset($_SESSION['username'])){
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                         DATA KELAS
                     </div>
+                    <?php
+                        $querykelas = $koneksi->prepare("SELECT COUNT(*) AS count_kelas FROM kelas");
+                        $querykelas->execute();
+                        $resultkelas = $querykelas->get_result();
+                        $getkelas = $resultkelas->fetch_assoc();
+                        ?>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        $40,000
+                        <?= $getkelas['count_kelas'] ?>
                     </div>
                 </div>
                 <div class="col-auto">
@@ -109,10 +134,8 @@ if(!isset($_SESSION['username'])){
         </div>
     </div>
 </a>
-<!-- Content Row -->
-
-</div>
-<a href="../guru/index.php" class="col-xl-3 col-md-6 mb-4 text-decoration-none" id="card">
+<!-- User -->
+<a href="../user/index.php" class="col-xl-6 col-md-6 mb-4 text-decoration-none" id="card">
     <div class="card border-left-success shadow h-100 py-2">
         <div class="card-body">
             <div class="row no-gutters align-items-center">
@@ -120,8 +143,14 @@ if(!isset($_SESSION['username'])){
                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                         DATA USER
                     </div>
+                    <?php
+                        $queryuser = $koneksi->prepare("SELECT COUNT(*) AS count_user FROM admin");
+                        $queryuser->execute();
+                        $resultuser = $queryuser->get_result();
+                        $getuser = $resultuser->fetch_assoc();
+                        ?>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        $40,000
+                        <?= $getuser['count_user'] ?>
                     </div>
                 </div>
                 <div class="col-auto">
@@ -131,6 +160,40 @@ if(!isset($_SESSION['username'])){
         </div>
     </div>
 </a>
+<!-- End User -->
+  
+<!-- peminjaman -->
+<a href="../peminjaman/index.php" class="col-xl-6 col-md-6 mb-4 text-decoration-none" id="card">
+    <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        DATA peminjaman
+                    </div>
+                    <?php
+                        $querypeminjaman = $koneksi->prepare("SELECT COUNT(*) AS count_peminjaman FROM peminjaman");
+                        $querypeminjaman->execute();
+                        $resultpeminjaman = $querypeminjaman->get_result();
+                        $getpeminjaman = $resultpeminjaman->fetch_assoc();
+                        ?>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <?= $getpeminjaman['count_peminjaman'] ?>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-address-book fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>
+<!-- End peminjaman -->
+
+<!-- Content Row -->
+
+</div>
+
 </div>
 <!-- /.container-fluid -->
 <?php include '../../layout/footer.php'; ?>

@@ -54,6 +54,7 @@ if($action === 'hapus'){
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <a href="<?= BASE_URL ?>/view/siswa/insert.php" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> tambah data</a>
+        <button id="import" class="btn btn-sm btn-warning"><i class="fas fa-file-import"></i> import data</button>
         <a href="<?= BASE_URL ?>/view/siswa/print_all.php" target="_blank" onclick="openPrintWindow(event)" class="btn btn-sm btn-primary"><i class="fas fa-print"></i> Print Card All</a>
     </div>
     <div class="card-body">
@@ -201,6 +202,33 @@ if($action === 'hapus'){
     </div>
 </div>
 
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Import Data Siswa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="import.php" id="import-form" enctype= "multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Upload File Excel!</label>
+                        <input type="file" name="file" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="import"  class="btn btn-primary">
+                        <i class="fas fa-save"></i> import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script>
@@ -233,6 +261,17 @@ if($action === 'hapus'){
     }
 
     $(document).ready(function(){
+        //name file
+        $('.custom-file').on('change', function(){
+            var fileName = e.target.files[0].name;
+            // Perbarui label dengan nama file
+            e.target.nextElementSibling.innerHTML = fileName;
+        })
+        //import
+        $('#import').on('click', function(){
+            $('#importModal').modal("show");
+        })
+        //hapus
         $('.hapus-btn').on('click', function(){
             const idhapus = $(this).data('idhapus')
                         Swal.fire({
@@ -251,6 +290,7 @@ if($action === 'hapus'){
                 });
   
         });
+        //foto preview
         $("#foto").on("change", function(e){
             const fotoInput = e.target 
             const preview = $("#preview")

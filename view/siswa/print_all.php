@@ -1,4 +1,11 @@
-<?php include '../../config.php'; ?>
+<?php 
+include '../../config.php'; 
+include '../../koneksi.php' ;
+$querySk = $koneksi->prepare("SELECT * FROM sekolah WHERE id_sekolah = 1");
+$querySk->execute();
+$resultSk = $querySk->get_result();
+$rowSk = $resultSk->fetch_assoc();
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -203,10 +210,10 @@
         <img src="<?= BASE_URL ?>/asset/logo.png" alt="Logo Sekolah" class="logo">
         <div class="school-info">
         <h2>Kartu Anggota Perpustakaan</h2>
-          <h2>SMK Negeri 1 Cirebon</h2>
-          <p>Jl. Perjuangan By Pass Sunyaragi - Cirebon</p>
-          <p>Website: <a href="http://smkn1-cirebon.sch.id">http://smkn1-cirebon.sch.id</a></p>
-          <p>Email: info@smkn1-cirebon.sch.id</p>
+        <h2><?= $rowSk['nama_sekolah'] ?></h2>
+          <p><?= $rowSk['alamat_sekolah'] ?></p>
+          <p>Website: <a href="<?= $rowSk['website_sekolah'] ?>"><?= $rowSk['website_sekolah'] ?></a></p>
+          <p>Email: <?= $rowSk['email_sekolah'] ?></p>
         </div>
       </div>
       <div class="profile-section">
