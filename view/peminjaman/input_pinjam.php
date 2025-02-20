@@ -1,7 +1,12 @@
 <?php
 include '../../koneksi.php';
 session_start();
-
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
+  
 if(isset($_POST['input_pinjam'])){
     $id_buku = $_POST['id_buku'];
     $id_siswa = $_POST['id_siswa'];

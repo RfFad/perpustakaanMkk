@@ -4,6 +4,12 @@ include '../../config.php';
 include '../../koneksi.php';
 session_start();
 
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
+
 use Picqer\Barcode\BarcodeGeneratorPNG;
 $sukses = "";
 $nama = $_POST['nama'];

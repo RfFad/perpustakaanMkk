@@ -2,6 +2,12 @@
 include '../../layout/header.php';
 include '../../koneksi.php';
 
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
+
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
 } else {

@@ -4,6 +4,11 @@
 $title = "Insert siswa";
 include '../../koneksi.php';
 include '../../layout/header.php';
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
 
 ?>
 

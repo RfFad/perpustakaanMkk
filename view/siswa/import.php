@@ -2,6 +2,13 @@
 require '../../vendor/autoload.php';
 include '../../koneksi.php'; // Koneksi ke database
 session_start();
+
+if(!isset($_SESSION['username'])){
+    $url = BASE_URL . "/auth/login.php";
+    echo '<script language="javascript">alert("Harap login terlebih dahulu"); document.location="'. $url .'"</script>';
+    exit;
+  }
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 if(isset($_POST['import'])){

@@ -1,6 +1,13 @@
 <?php 
 include '../../config.php' ;
 include '../../koneksi.php' ;
+
+if(!isset($_SESSION['username'])){
+  $url = BASE_URL . "/auth/login.php";
+  echo '<script language="javascript">alert("Harap login terlebih dahulu"); document.location="'. $url .'"</script>';
+  exit;
+}
+
 $querySk = $koneksi->prepare("SELECT * FROM sekolah WHERE id_sekolah = 1");
 $querySk->execute();
 $resultSk = $querySk->get_result();
