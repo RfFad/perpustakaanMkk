@@ -42,6 +42,73 @@
         </div>
     </div>
 
+<!-- Profile -->
+    <style>
+  .text-center.profile-photo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-status-border {
+  width: 110px;
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  padding: 5px;
+  position: relative;
+}
+
+.profile-user-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+}
+</style>
+                <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="">
+                <div class="modal-body">
+                <div class="card border-bottom-primary">
+                                <div class="card-body box-profile">
+                                    <div class="text-center profile-photo">
+                                        <div class="profile-status-border bg-secondary">
+                                            <img class="profile-user-img img-fluid rounded-circle" src="profile.jpg" id="foto_siswa" alt="User profile picture">
+                                        </div>
+                                    </div>
+                                    <h4 class="profile-username text-center" id="username_profile"><?= $_SESSION['nama'] ?></h4>
+                                    <p class="text-muted text-center" id="nis"></p>
+                                    <ul class="list-group list-group-unbordered mb-3">
+                                        <li class="list-group-item">
+                                            <b>Username</b> <a class="float-right" id="nama_profile"><?= $_SESSION['username'] ?></a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Email</b> <a class="float-right" id="email_profile"><?= $_SESSION['email'] ?></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- End Profile -->
     <!-- Bootstrap core JavaScript-->
     <script src="<?= BASE_URL ?>../public/vendor/jquery/jquery.min.js"></script>
     <script src="<?= BASE_URL ?>../public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

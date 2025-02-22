@@ -133,7 +133,9 @@ if (isset($_POST['update'])) {
                 <td><?= htmlspecialchars($row['role']) ?></td>
                 <td>
                     <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= addslashes($row['nama']) ?>', '<?= addslashes($row['username']) ?>', '<?= addslashes($row['email']) ?>', '<?= addslashes($row['role']) ?>', '<?= addslashes($row['id_admin']) ?>')" class="btn btn-primary"><i class="fas fa-edit"> Edit</i></a>
+                    <?php if($_SESSION['role'] === 'admin') { ?>  
                     <a href="#" class="btn btn-danger btn-hapus" data-idhapus = "<?= htmlspecialchars($row['id_admin']) ?>"><i class="fas fa-trash"> Hapus</i></a>
+                    <?php }?>
                 </td>
             </tr>
         <?php } ?>
@@ -194,7 +196,9 @@ if (isset($_POST['update'])) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <?php if($_SESSION['role'] === 'admin') { ?> 
                     <button type="submit" name="update" class="btn btn-primary"><i class="fas fa-save"></i> Save changes</button>
+                    <?php } ?>
                 </div>
             </form>
         </div>

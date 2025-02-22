@@ -10,6 +10,13 @@ if(!isset($_SESSION['username'])){
     exit;
   }
 
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
+    $urlBack = BASE_URL . "/view/dashboard/index.php";
+    echo '<script language="javascript">alert("Anda tidak bisa mengakses halaman ini, karena anda bukan admin!"); document.location="' . $urlBack . '"</script>';
+    exit;
+}
+
+
 use Picqer\Barcode\BarcodeGeneratorPNG;
 $sukses = "";
 $nama = $_POST['nama'];

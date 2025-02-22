@@ -223,7 +223,9 @@ if ($action === 'update') {
                         </div>
                     </div>
                 </div>
+                <?php if($_SESSION['role'] === 'admin') { ?> 
                 <button class="btn btn-primary" data-toggle="modal" data-target="#updateModal">Edit</button>
+                <?php } ?>
             </section>
 
             <!-- Tambahkan FontAwesome jika belum ada -->

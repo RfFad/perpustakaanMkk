@@ -1,5 +1,5 @@
 <?php
-$title = "Scan";
+$title = "Pinjam";
 include '../../koneksi.php';
 include '../../layout/header.php';
 if(!isset($_SESSION['username'])){
@@ -7,6 +7,14 @@ if(!isset($_SESSION['username'])){
   echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
   exit;
 }
+
+$allowed_role = ['admin', 'operator'];
+if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
+    session_destroy();
+    echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
+    exit();
+}
+
 if(!isset($_SESSION['']))
 $action = isset($_GET['action']) ? $_GET['action'] : "";
 

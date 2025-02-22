@@ -1,5 +1,5 @@
 <?php
-$title = 'Kelas';
+$title = 'Data Peminjaman';
 
 include '../../layout/header.php';
 include '../../koneksi.php';
@@ -8,11 +8,14 @@ if(!isset($_SESSION['username'])){
     echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
     exit;
   }
-if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
-    $urlBack = BASE_URL . "/view/dashboard/index.php";
-    echo '<script language="javascript">alert("Anda tidak bisa mengakses halaman ini, karena anda bukan admin!"); document.location="' . $urlBack . '"</script>';
-    exit;
+
+$allowed_role = ['admin', 'operator'];
+if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
+    session_destroy();
+    echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
+    exit();
 }
+
 $sukses = "";
 $error = "";
 

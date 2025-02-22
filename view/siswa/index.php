@@ -98,7 +98,9 @@ if($action === 'hapus'){
                         <td><?= $row['alamat'] ?></td>
                         <td>
                             <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= $row['nis'] ?>', '<?= $row['nama'] ?>', '<?= $row['id_kelas'] ?>', '<?= $row['id_jurusan'] ?>', '<?= $row['telepon'] ?>', '<?= $row['alamat'] ?>', '<?= $row['foto'] ?>', '<?= $row['id_siswa'] ?>', '<?= $row['barcode'] ?>')" class="btn btn-primary"><i class="fas fa-edit"></i> edit</a>
+                            <?php if($_SESSION['role'] === 'admin') { ?> 
                             <a href="#"  class="btn btn-danger hapus-btn" data-idhapus = "<?= $row['id_siswa'] ?>"><i class="fas fa-trash"></i> hapus</a>
+                            <?php } ?>
                         </td>
                     </tr>   
                     <?php } $sql->close(); ?>
@@ -193,9 +195,11 @@ if($action === 'hapus'){
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <a href="" id="print" class="btn btn-success" target="_blank" onclick="openPrintWindow(event)"><i class = "fas fa-print"></i> Print card</a>
+                    <?php if($_SESSION['role'] === 'admin') { ?> 
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Save changes
                     </button>
+                    <?php } ?>
                 </div>
             </form>
         </div>

@@ -32,7 +32,9 @@ if(isset($_POST['login'])){
         
         if(password_verify($password,$user['password'])){
             $_SESSION['id_admin'] = $user['id_admin'];
+            $_SESSION['nama'] = $user['nama'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
 
           

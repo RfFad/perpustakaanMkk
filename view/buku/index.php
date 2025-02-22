@@ -112,6 +112,9 @@ if(isset($_GET['action'])){
         ?>
         <span class="btn btn-sm btn-primary">Jumlah Buku : <?= $rowCount['count'] ?></span>
         <button type="button" class = "btn btn-sm btn-warning" id="btn-filter">filter search</button>
+        <?php if($_SESSION['role'] === 'admin') { ?> 
+        <button id="import" class="btn btn-sm btn-secondary"><i class="fas fa-file-import"></i> import data</button>
+        <?php } ?>
         <a href="<?= BASE_URL ?>/view/buku/print_all.php" target="_blank" onclick="print(event)" class="btn btn-sm btn-success"><i class="fas fa-print"></i> Print Barcode</a>
         </div>
     </div>
@@ -192,7 +195,7 @@ if(isset($_GET['action'])){
                                                          '<?= addslashes($row['pengarang']) ?>', 
                                                          '<?= addslashes($row['penerbit']) ?>', 
                                                          '<?= addslashes($row['tahun_terbit']) ?>', 
-                                                         '<?= addslashes($row['foto']) ?>', 
+                                                         '<?= isset($row['foto']) ? addslashes($row['foto']) : ''   ?>', 
                                                          '<?= addslashes($row['barcode']) ?>', 
                                                          '<?= addslashes($row['id_buku']) ?>')" 
                                     data-toggle="modal">
@@ -287,15 +290,45 @@ if(isset($_GET['action'])){
 
     <!-- Grup tombol di kanan -->
     <div>
-        <a href="" class="btn btn-success" id="print-barcode" target="_blank" onclick="print(event)"><i class="fas fa-print"></i> Print Barcode</a>
+        <a href="" class="btn btn-success" id="print-barcode" target="_blank" onclick="print(event)">
+        <i class="fas fa-print"></i> Print Barcode</a>
+        <?php if($_SESSION['role'] === 'admin') { ?> 
         <a href="#" id="btn-hapus" class="btn btn-danger"><i class="fas fa-trash"></i> Hapus</a>
         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+        <?php } ?>
     </div>
 </div>
 
     </form>
     </div>
   </div>
+</div>
+<!-- Modal import -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Import Data Buku</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="import.php" id="import-form" enctype= "multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Upload File Excel!</label>
+                        <input type="file" name="file" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="import"  class="btn btn-primary">
+                        <i class="fas fa-save"></i> import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -351,7 +384,10 @@ if(isset($_GET['action'])){
                 }
                 });
     })
-
+     //import
+     $('#import').on('click', function(){
+            $('#importModal').modal("show");
+        })
     $("#foto").on("change", function(e){
             const fotoInput = e.target 
             const preview = $("#imgCover")

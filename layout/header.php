@@ -150,21 +150,19 @@ session_regenerate_id(true);
                 </div>
             </div>
         </li>
-        <li class="nav-item">
-              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#DataPages"
-              aria-expanded="true" aria-controls="collapsePages">
-              <i class="fas fa-school"></i>
-              <span>Data Sekolah</span>
-            </a>
-            <div id="DataPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="<?= BASE_URL ?>/view/profile/profile.php">Data Sekolah</a>
-                </div>
-            </div>
-        </li>
 <?php }?>
-        
-            
+        <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#DataPages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-school"></i>
+                    <span>Data Sekolah</span>
+                    </a>
+                    <div id="DataPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="<?= BASE_URL ?>/view/profile/profile.php">Data Sekolah</a>
+                        </div>
+                    </div>
+         </li>   
             
 
             <!-- Divider -->
@@ -218,7 +216,7 @@ session_regenerate_id(true);
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" data-toggle="modal"data-target="#profileModal" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -242,3 +240,5 @@ session_regenerate_id(true);
 
                 </nav>
                 <!-- End of Topbar -->
+
+              

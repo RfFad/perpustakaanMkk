@@ -7,6 +7,13 @@ if(!isset($_SESSION['username'])){
     exit;
   }
   
+  $allowed_role = ['admin', 'operator'];
+  if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
+      session_destroy();
+      echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
+      exit();
+  }
+
 if(isset($_POST['input_pinjam'])){
     $id_buku = $_POST['id_buku'];
     $id_siswa = $_POST['id_siswa'];
