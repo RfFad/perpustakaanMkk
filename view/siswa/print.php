@@ -1,39 +1,36 @@
 <?php 
-include '../../config.php' ;
+include '../../config.php'; 
 include '../../koneksi.php' ;
 
-if(!isset($_SESSION['username'])){
-  $url = BASE_URL . "/auth/login.php";
-  echo '<script language="javascript">alert("Harap login terlebih dahulu"); document.location="'. $url .'"</script>';
-  exit;
-}
 
 $querySk = $koneksi->prepare("SELECT * FROM sekolah WHERE id_sekolah = 1");
 $querySk->execute();
 $resultSk = $querySk->get_result();
 $rowSk = $resultSk->fetch_assoc();
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kartu Perpustakaan</title>
+  <title>Cetak Semua Kartu Perpustakaan</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 kartu per baris */
+    gap: 10px;
+    width: 100%;
+    page-break-before: always;
   }
 
-  .foldable-card {
+    .foldable-card {
     width: 900px;
     height: 250px;
     display: flex;
@@ -114,21 +111,21 @@ $rowSk = $resultSk->fetch_assoc();
   }
 
   .logo {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     margin-right: 50px;
-    margin-top: -50px;
+    margin-top: -30px;
   }
 
   .school-info h2 {
     text-align: center;
-    font-size: 16px;
+    font-size: 10px;
     margin: 0;
   }
 
   .school-info p {
     text-align: center;
-    font-size: 12px;
+    font-size: 10px;
     margin: 2px 0;
   }
 
@@ -140,8 +137,8 @@ $rowSk = $resultSk->fetch_assoc();
   }
 
   .profile-photo {
-    width: 80px;
-    height: 100px;
+    width: 60px;
+    height: 80px;
     border: 2px solid #ddd;
     margin-right: 15px;
     border-radius: 5px;
@@ -150,7 +147,7 @@ $rowSk = $resultSk->fetch_assoc();
 
   .member-info p {
     margin: 5px 0;
-    font-size: 14px;
+    font-size: 10px;
   }
 
   /* Bagian Tampilan Belakang */
@@ -159,13 +156,13 @@ $rowSk = $resultSk->fetch_assoc();
   }
 
   .barcode {
-    width: 150px;
+    width: 110px;
     height: auto;
   }
 
   .back-info p, .footer-info p {
-    font-size: 12px;
-    margin: 8px 0;
+    font-size: 8px;
+    margin: 5px 0;
   }
 
   .footer-info {
@@ -179,52 +176,29 @@ $rowSk = $resultSk->fetch_assoc();
     margin: 0;
     padding: 0;
   }
-
+  .container{
+    display: block;
+  }
   .foldable-card {
-    width: 20cm; /* Lebar kartu */
-    height: 7cm; /* Tinggi kartu */
+    width: 16cm; 
+    height: 5cm; 
     border: none;
     box-shadow: none;
     page-break-inside: avoid;
-    position: absolute;
-
-    /* Atur posisi kartu saat cetak */
-    top: 1cm; /* Beri jarak dari atas */
-    left: 1cm; /* Beri jarak dari kiri */
-
-    /* Pastikan warna dan background tetap terlihat */
+    
+    /* Pastikan background tidak hilang */
     background: url('background-image.jpg') no-repeat center center !important;
     background-size: cover !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  /* Atur margin cetak agar tidak memotong kartu */
-  @page {
-    margin: 1cm; /* Beri jarak dari pinggiran kertas */
+    -webkit-print-color-adjust: exact; /* Untuk Safari & Chrome */
+    print-color-adjust: exact; /* Untuk browser lain */
   }
 }
 
-
 </style>
-
 </head>
 <body>
-  <div class="foldable-card">
-    <!-- Bagian Tampilan Depan -->
-    <div class="front">
-      <div class="header-section">
-        <img src="<?= BASE_URL ?>/asset/logo.png" alt="Logo Sekolah" class="logo">
-        <div class="school-info">
-        <h2>Kartu Anggota Perpustakaan</h2>
-          <h2><?= $rowSk['nama_sekolah'] ?></h2>
-          <p><?= $rowSk['alamat_sekolah'] ?></p>
-          <p>Website: <a href="<?= $rowSk['website_sekolah'] ?>"><?= $rowSk['website_sekolah'] ?></a></p>
-          <p>Email: <?= $rowSk['email_sekolah'] ?></p>
-        </div>
-      </div>
-      <div class="profile-section">
-      <?php
+    <div class="container">
+<?php
           
           include '../../koneksi.php';
           $nis = $_GET['nis'];
@@ -234,6 +208,21 @@ $rowSk = $resultSk->fetch_assoc();
           $result = $query->get_result();
 
           while($row = $result->fetch_array()){ ?>
+  <div class="foldable-card">
+    <!-- Bagian Tampilan Depan -->
+    <div class="front">
+      <div class="header-section">
+        <img src="<?= BASE_URL ?>/asset/<?= $rowSk['foto'] ?>" alt="Logo Sekolah" class="logo">
+        <div class="school-info">
+        <h2>Kartu Anggota Perpustakaan</h2>
+        <h2><?= $rowSk['nama_sekolah'] ?></h2>
+          <p><?= $rowSk['alamat_sekolah'] ?></p>
+          <p>Website: <a href="<?= $rowSk['website_sekolah'] ?>"><?= $rowSk['website_sekolah'] ?></a></p>
+          <p>Email: <?= $rowSk['email_sekolah'] ?></p>
+        </div>
+      </div>
+      <div class="profile-section">
+      
         <img src="<?= $row['foto'] ? BASE_URL . '/asset/foto_siswa/' . $row['foto'] : BASE_URL . '/asset/profile.jpg' ?>" alt="Foto Profil" class="profile-photo">
         <div class="member-info">
           
@@ -242,9 +231,7 @@ $rowSk = $resultSk->fetch_assoc();
           <p><strong>Kelas:</strong> <?= $row['tingkat'] ?> <?= $row['singkatan'] ?> <?= $row['nama_kelas'] ?></p>
           <p><strong>Alamat:</strong> <?= $row['alamat'] ?></p>
           <p><strong>Telepon:</strong> <?= $row['telepon'] ?></p>
-          <?php
-          }
-          ?>
+         
         </div>
       </div>
     </div>
@@ -252,10 +239,10 @@ $rowSk = $resultSk->fetch_assoc();
     <!-- Bagian Tampilan Belakang -->
     <div class="back">
       <div class="barcode-section">
-        <img src="<?= BASE_URL ?>/asset/barcode_siswa/12228419.png" alt="Barcode Anggota" class="barcode">
+        <img src="<?= BASE_URL ?>/asset/barcode_siswa/<?= $row['barcode'] ?>.png" alt="Barcode Anggota" class="barcode">
       </div>
       <div class="back-info">
-        <p>Kartu ini diterbitkan oleh Perpustakaan SMK Negeri 1 Cirebon.</p>
+        <p>Kartu ini diterbitkan oleh Perpustakaan <?= $rowSk['nama_sekolah'] ?>.</p>
         <p>Harap mengembalikan kartu ini kepada pemiliknya jika Anda menemukannya.</p>
       </div>
       <div class="footer-info">
@@ -265,14 +252,17 @@ $rowSk = $resultSk->fetch_assoc();
       </div>
     </div>
   </div>
-
+  <?php
+          }
+          ?>
+          </div>
   <script>
-  window.onload = function() {
-    window.print(); // Otomatis mencetak halaman
-    setTimeout(function() {
-      window.close(); // Menutup jendela setelah print selesai
-    }, 2000); // Waktu tunggu agar print dapat diproses sebelum jendela tertutup
-  };
+ window.onload = function(){
+  window.print();
+  setTimeout(function(){
+    window.close();
+  }, 2000)
+ }
 </script>
 
 </body>

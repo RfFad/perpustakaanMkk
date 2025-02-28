@@ -2,11 +2,6 @@
 include '../../config.php'; 
 include '../../koneksi.php' ;
 
-if(!isset($_SESSION['username'])){
-  $url = BASE_URL . "/auth/login.php";
-  echo '<script language="javascript">alert("Harap login terlebih dahulu"); document.location="'. $url .'"</script>';
-  exit;
-}
 
 $querySk = $koneksi->prepare("SELECT * FROM sekolah WHERE id_sekolah = 1");
 $querySk->execute();
@@ -116,21 +111,21 @@ $rowSk = $resultSk->fetch_assoc();
   }
 
   .logo {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     margin-right: 50px;
-    margin-top: -50px;
+    margin-top: -30px;
   }
 
   .school-info h2 {
     text-align: center;
-    font-size: 16px;
+    font-size: 10px;
     margin: 0;
   }
 
   .school-info p {
     text-align: center;
-    font-size: 12px;
+    font-size: 10px;
     margin: 2px 0;
   }
 
@@ -142,8 +137,8 @@ $rowSk = $resultSk->fetch_assoc();
   }
 
   .profile-photo {
-    width: 80px;
-    height: 100px;
+    width: 60px;
+    height: 80px;
     border: 2px solid #ddd;
     margin-right: 15px;
     border-radius: 5px;
@@ -152,7 +147,7 @@ $rowSk = $resultSk->fetch_assoc();
 
   .member-info p {
     margin: 5px 0;
-    font-size: 14px;
+    font-size: 10px;
   }
 
   /* Bagian Tampilan Belakang */
@@ -161,13 +156,13 @@ $rowSk = $resultSk->fetch_assoc();
   }
 
   .barcode {
-    width: 150px;
+    width: 110px;
     height: auto;
   }
 
   .back-info p, .footer-info p {
-    font-size: 12px;
-    margin: 8px 0;
+    font-size: 8px;
+    margin: 5px 0;
   }
 
   .footer-info {
@@ -181,10 +176,12 @@ $rowSk = $resultSk->fetch_assoc();
     margin: 0;
     padding: 0;
   }
-
+  .container{
+    display: block;
+  }
   .foldable-card {
-    width: 20cm; 
-    height: 7cm; 
+    width: 16cm; 
+    height: 5cm; 
     border: none;
     box-shadow: none;
     page-break-inside: avoid;
@@ -198,7 +195,6 @@ $rowSk = $resultSk->fetch_assoc();
 }
 
 </style>
-
 </head>
 <body>
     <div class="container">
@@ -214,7 +210,7 @@ $rowSk = $resultSk->fetch_assoc();
     <!-- Bagian Tampilan Depan -->
     <div class="front">
       <div class="header-section">
-        <img src="<?= BASE_URL ?>/asset/logo.png" alt="Logo Sekolah" class="logo">
+        <img src="<?= BASE_URL ?>/asset/<?= $rowSk['foto'] ?>" alt="Logo Sekolah" class="logo">
         <div class="school-info">
         <h2>Kartu Anggota Perpustakaan</h2>
         <h2><?= $rowSk['nama_sekolah'] ?></h2>
@@ -241,7 +237,7 @@ $rowSk = $resultSk->fetch_assoc();
     <!-- Bagian Tampilan Belakang -->
     <div class="back">
       <div class="barcode-section">
-        <img src="<?= BASE_URL ?>/asset/barcode_siswa/12228419.png" alt="Barcode Anggota" class="barcode">
+        <img src="<?= BASE_URL ?>/asset/barcode_siswa/<?= $row['barcode'] ?>.png" alt="Barcode Anggota" class="barcode">
       </div>
       <div class="back-info">
         <p>Kartu ini diterbitkan oleh Perpustakaan SMK Negeri 1 Cirebon.</p>

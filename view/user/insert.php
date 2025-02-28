@@ -71,58 +71,56 @@ if(isset($_POST['simpan'])){
                 <h6 class="m-0 font-weight-bold text-primary">Insert User</h6>
             </div>
             <form action="" method="post" id="simpan-form" enctype="multipart/form-data">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                    <label for="nama">Nama</label>
-                                    <input type="text" name="nama" class="form-control" placeholder="Nama" require>
-                            </div>
-                            <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <input type="text" name="username" class="form-control <?= isset($error['username']) ? 'is-invalid' : '' ?>" placeholder="Username" require>
-                                    <?php if (isset($error['username'])): ?>
-                                        <div class="invalid-feedback"><?= $error['username'] ?></div>
-                                    <?php endif; ?>
-                            </div>
-                                <label for="">Email</label>
-                            <div class="input-group mb-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">@</div>
-                                    </div>
-                                    <input type="email" class="form-control <?= isset($error['username']) ? 'is-invalid' : '' ?>" id="inlineFormInputGroup" name="email" placeholder="Email">
-                                    <?php if (isset($error['email'])): ?>
-                                        <div class="invalid-feedback"><?= $error['email'] ?></div>
-                                    <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="">Password</label>
-                                <input type="password" name="password" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Role</label>
-                                <select name="role" id="" class="form-control" require>
-                                    <option disabled selected>Selected</option>
-                                    <option value="admin">admin</option>
-                                    <option value="operator">operator</option>
-                                </select>
-                            </div>
-                        </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="nama">Nama</label>
+                    <input type="text" name="nama" class="form-control" placeholder="Nama" required>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control <?= isset($error['username']) ? 'is-invalid' : '' ?>" placeholder="Username" required>
+                    <?php if (isset($error['username'])): ?>
+                        <div class="invalid-feedback"><?= $error['username'] ?></div>
+                    <?php endif; ?>
+                </div>
+                <label for="email">Email</label>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">@</div>
                     </div>
-                    
-                    
+                    <input type="email" class="form-control <?= isset($error['email']) ? 'is-invalid' : '' ?>" id="email" name="email" placeholder="Email" required>
+                    <?php if (isset($error['email'])): ?>
+                        <div class="invalid-feedback"><?= $error['email'] ?></div>
+                    <?php endif; ?>
                 </div>
-                <div class="card-footer">
-                    <a href="<?= BASE_URL ?>/view/user/index.php" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </a>
-                    <button type="submit" name="simpan" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save
-                    </button>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" required>
                 </div>
-            </form>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select name="role" id="role" class="form-control" required>
+                        <option disabled selected>Pilih Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="operator">Operator</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a href="<?= BASE_URL ?>/view/user/index.php" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+        <button type="submit" name="simpan" class="btn btn-primary">
+            <i class="fas fa-save"></i> Save
+        </button>
+    </div>
+</form>
         </div>
     </div>
 </div>

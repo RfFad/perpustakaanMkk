@@ -1,8 +1,11 @@
 <?php include  '../../configPath.php' ?>
-<?php include  BASE_PATH.'/config.php'; 
+<?php include  BASE_PATH.'/config.php';
+include '../../koneksi.php';
+
 ob_start();
 session_start();
 session_regenerate_id(true);
+
 ?>
 
 <!DOCTYPE html>
@@ -41,12 +44,21 @@ session_regenerate_id(true);
 
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <?php 
 
+            $queryProfile = $koneksi->prepare("SELECT * FROM sekolah WHERE id_sekolah = 1");
+            $queryProfile->execute();
+            $resultProfile = $queryProfile->get_result();
+            $dataQuery = $resultProfile->fetch_assoc();
+            $nama_sekolah = $dataQuery['nama_sekolah'];
+            $logo_sekolah = $dataQuery['foto'];
+
+            ?>
             <!-- Sidebar - Brand -->
             <div class="d-flex flex-column align-items-center justify-content-center mt-3">
-                <img src="<?= BASE_URL ?>/asset/logo.png" style="width: 80px; margin-bottom: -10px;" alt="">
+                <img src="<?= BASE_URL ?>/asset/<?= $logo_sekolah ?>" style="width: 80px; margin-bottom: -10px;" alt="">
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                    <div class="sidebar-brand-text mx-3">Perpustakaan Neper</div>
+                    <div class="sidebar-brand-text mx-3">Perpustakaan <?= $nama_sekolah ?></div>
                 </a>
             </div>
 
@@ -80,6 +92,19 @@ session_regenerate_id(true);
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="<?= BASE_URL ?>/view/peminjaman/index.php">Data Peminjaman</a>
                         <a class="collapse-item" href="<?= BASE_URL ?>/view/peminjaman/scan.php">Insert Peminjaman</a>
+                    </div>
+                </div>
+          </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#kunjunganPages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fa fa-book-open"></i>
+                    <span>Kunjungan</span>
+                </a>
+                <div id="kunjunganPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/kunjungan/index.php">Data Pengunjung</a>
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/junjungan/insert.php">Insert Kunjungan</a>
                     </div>
                 </div>
           </li>

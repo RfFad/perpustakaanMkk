@@ -10,6 +10,12 @@ if(!isset($_SESSION['username'])){
     echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
     exit;
   }
+$allowed_role = ['admin', 'operator'];
+if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
+      session_destroy();
+      echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
+      exit();
+}
 ?>
 
 
@@ -33,7 +39,6 @@ if(!isset($_SESSION['username'])){
             <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        DATA BUKU
                     </div>
                     <?php
                         $query = $koneksi->prepare("SELECT COUNT(*) AS count_buku FROM buku");

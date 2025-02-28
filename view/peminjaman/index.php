@@ -32,6 +32,12 @@ if(isset($_GET['status'])){
     $status = "";
 }
 
+if(isset($_GET['option'])){
+    $option = $_GET['option'];
+}else{
+    $option = "";
+}
+
 if($action === 'hapus'){
     $url = BASE_URL . "/view/peminjaman/index.php";
     $id = $_GET['id'];
@@ -74,6 +80,13 @@ $query = $koneksi->prepare("UPDATE peminjaman SET status = 'Melebihi waktu' WHER
 $query->execute();
 $queryStatus = $koneksi->prepare("UPDATE peminjaman SET status = 'Dipinjam' WHERE tanggal_kembali > CURDATE() AND status='Melebihi waktu'");
 $queryStatus->execute();
+
+
+//Function untuk hari
+function Hari($tanggal) {
+    $hariNama = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    return $hariNama[date('w', strtotime($tanggal))];
+}
 ?>
 <style>
   .text-center.profile-photo {
@@ -116,18 +129,23 @@ $queryStatus->execute();
         <a href="<?= BASE_URL ?>/view/peminjaman/scan.php" class="btn btn-sm btn-success d-flex align-items-center"><i class="fas fa-plus mr-2"></i> tambah data</a>
         <div class="button-data">
             <ul class="nav nav-pills">
-                <li class="nav-item">
-                    <a class="nav-link <?= $status === '' ? 'active' : '' ?> " href="index.php">Hari ini</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= $status === 'semua' ? 'active' : '' ?>" href="index.php?status=semua">Semua</a>
+                <li class="nav-item dropdown d-flex align-items-center ">
+                    <a class="nav-link dropdown-toggle <?= $option === 'hariini' || $option === '' ? 'active' : '' ?>" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Hari Ini</a>
+                    <div class="dropdown-menu">
+                    <a class="dropdown-item" href="index.php">Semua</a>
+                    <a class="dropdown-item" href="index.php?option=hariini&status=dipinjam">Dipinjam</a>
+                    <a class="dropdown-item" href="index.php?option=hariini&status=dikembalikan">Dikembalikan</a>
+                    <a class="dropdown-item" href="index.php?option=hariini&status=melebihiwaktu">Melebihi waktu</a>
+                    <a class="dropdown-item" href="index.php?option=hariini&status=tgl_peminjaman">Tanggal Peminjaman</a>
+                    <a class="dropdown-item" href="index.php?option=hariini&status=tgl_pengembalian">Tanggal Pengembalian</a>
                 </li>
                 <li class="nav-item dropdown d-flex align-items-center ">
-                    <a class="nav-link dropdown-toggle <?= $status === 'dipinjam' || $status === 'dikembalikan' || $status === 'melebihiwaktu'  ? 'active' : '' ?>" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Status</a>
+                    <a class="nav-link dropdown-toggle <?= $option === 'semua' ? 'active' : '' ?>" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Semua</a>
                     <div class="dropdown-menu">
-                    <a class="dropdown-item" href="index.php?status=dipinjam">Dipinjam</a>
-                    <a class="dropdown-item" href="index.php?status=dikembalikan">Dikembalikan</a>
-                    <a class="dropdown-item" href="index.php?status=melebihiwaktu">Melebihi waktu</a>
+                    <a class="dropdown-item" href="index.php?option=semua&status=semua">Semua</a>
+                    <a class="dropdown-item" href="index.php?option=semua&status=dipinjam">Dipinjam</a>
+                    <a class="dropdown-item" href="index.php?option=semua&status=dikembalikan">Dikembalikan</a>
+                    <a class="dropdown-item" href="index.php?option=semua&status=melebihiwaktu">Melebihi waktu</a>
                 </li>
             </ul>
         </div>
@@ -162,20 +180,60 @@ $queryStatus->execute();
                 </tfoot>
                 <tbody>
                     <?php 
-                    $query = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan  order by pj.id_peminjaman DESC";
-                    if(!isset($_GET['status'])){
-                        $queryData = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE DATE(pj.tanggal_pinjam) = CURDATE() OR DATE(pj.tanggal_kembali) = CURDATE() order by pj.id_peminjaman DESC";
-                    }else if($_GET['status'] === 'dipinjam'){
-                        $queryData = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE pj.status = 'Dipinjam'  order by pj.id_peminjaman DESC";
-                    }else if($_GET['status'] === 'dikembalikan'){
-                        $queryData = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE pj.status = 'Dikembalikan'  order by pj.id_peminjaman DESC";
-                    }else if($_GET['status'] === 'melebihiwaktu'){
-                        $queryData = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, s.telepon, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM peminjaman pj JOIN buku b ON pj.id_buku = b.id_buku JOIN siswa s ON pj.id_siswa = s.id_siswa JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan WHERE pj.status = 'Melebihi waktu'  order by pj.id_peminjaman DESC";
-                    }else if($_GET['status'] === 'semua'){
-                        $queryData = $query;
+                    $queryBase = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas 
+                                  FROM peminjaman pj 
+                                  JOIN buku b ON pj.id_buku = b.id_buku 
+                                  JOIN siswa s ON pj.id_siswa = s.id_siswa 
+                                  JOIN kelas k ON s.id_kelas = k.id_kelas 
+                                  JOIN jurusan j ON s.id_jurusan = j.id_jurusan ";
+                    
+                    $whereClauses = [];
+                    if(isset($_GET['option']) && isset($_GET['status'])){
+                        if($option === 'semua'){
+                            switch ($_GET['status']){
+                                case 'dipinjam':
+                                    $whereClauses[] = " pj.status = 'Dipinjam' ";
+                                    break;
+                                case 'dikembalikan':
+                                    $whereClauses[] = " pj.status = 'Dikembalikan' ";
+                                    break; 
+                                case 'melebihiwaktu':
+                                    $whereClauses[] = " pj.status = 'Melebihi waktu' ";
+                                    break;
+                                case 'semua':
+                                    break;
+                            }
+                        }else{
+                            switch($_GET['status']){
+                                case 'dipinjam':
+                                    $whereClauses[] = " (DATE(pj.tanggal_pinjam) = CURDATE() OR DATE(pj.tanggal_kembali) = CURDATE()) AND pj.status = 'Dipinjam'";
+                                    break;
+                                case 'dikembalikan':
+                                    $whereClauses[] = " (DATE(pj.tanggal_pinjam) = CURDATE() OR DATE(pj.tanggal_kembali) = CURDATE()) AND pj.status = 'Dikembalikan'";
+                                    break; 
+                                case 'melebihiwaktu':
+                                    $whereClauses[] = " (DATE(pj.tanggal_pinjam) = CURDATE() OR DATE(pj.tanggal_kembali) = CURDATE()) AND pj.status = 'Melebihi waktu'";
+                                    break;
+                                case 'tgl_peminjaman':
+                                    $whereClauses[] = " DATE(pj.tanggal_pinjam) = CURDATE()";
+                                    break;
+                                case 'tgl_pengembalian':
+                                    $whereClauses[] = " DATE(pj.tanggal_kembali) = CURDATE()";
+                                    break;
+                                case 'semua':
+                                    break;
+                            }
+                        }
+                    }else{
+                        $whereClauses[] = " DATE(pj.tanggal_pinjam) = CURDATE() OR DATE(pj.tanggal_kembali) = CURDATE() ";
                     }
 
-                    $queryKonek = $koneksi->prepare($queryData);
+                    if(!empty($whereClauses)){
+                        $queryBase .= "WHERE" . implode(" AND ", $whereClauses);
+                    }
+                    $queryBase .= "ORDER BY pj.id_peminjaman DESC";
+
+                    $queryKonek = $koneksi->prepare($queryBase);
                     $queryKonek->execute();
                     $result = $queryKonek->get_result();
                     $no = 1;
@@ -186,8 +244,8 @@ $queryStatus->execute();
                         <td><?= htmlspecialchars($row['nama_siswa']) ?></td>
                         <td><?= htmlspecialchars($row['telepon']) ?></td>
                         <td><?= htmlspecialchars($row['nama_buku']) ?></td>
-                        <td><?= htmlspecialchars($row['tanggal_pinjam']) ?></td>
-                        <td><?= htmlspecialchars($row['tanggal_kembali']) ?></td>
+                        <td><?= htmlspecialchars($row['tanggal_pinjam']) ?>, <?= Hari($row['tanggal_pinjam']) ?></td>
+                        <td><?= htmlspecialchars($row['tanggal_kembali']) ?>, <?= Hari($row['tanggal_kembali']) ?></td>
                         <td><span class="badge <?= $row['status'] === 'Dipinjam' ? 'badge-warning' : ($row['status'] === 'Dikembalikan' ? 'badge-success' : 'badge-danger') ?>">
                             <?= $row['status'] ?>
                             </span>

@@ -1,4 +1,5 @@
 <?php 
+$title = "Profile Sekolah";
 include '../../layout/header.php';
 include '../../koneksi.php';
 
@@ -7,6 +8,13 @@ if(!isset($_SESSION['username'])){
     echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
     exit;
   }
+  
+$allowed_role = ['admin', 'operator'];
+if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
+      session_destroy();
+      echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
+      exit();
+}
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -20,8 +28,30 @@ if ($action === 'update') {
     $notelp_sekolah = $_POST['notelp_sekolah'];
     $alamat_sekolah = $_POST['alamat_sekolah'];
     $website_sekolah = $_POST['website_sekolah'];
-    $queryUpdate = $koneksi->prepare("UPDATE sekolah SET nama_sekolah = ?, email_sekolah= ?, notelp_sekolah= ?, alamat_sekolah = ?, website_sekolah = ? WHERE id_sekolah = 1 ");
-    $queryUpdate->bind_param("sssss", $nama_sekolah, $email_sekolah, $notelp_sekolah, $alamat_sekolah, $website_sekolah);
+    $fotoBaru = $_FILES['foto']['name'];
+    $tmp_name = $_FILES['foto']['tmp_name'];
+
+    //untk mengambil data foto lama jika foto tidak diubah
+     $queryFoto = $koneksi->prepare("SELECT foto FROM sekolah WHERE id_sekolah = 1");
+    $queryFoto->execute();
+    $result = $queryFoto->get_result();
+    $data = $result->fetch_assoc();
+    $fotoLama = $data['foto'];
+
+
+    if(!empty($fotoBaru)){
+        if(file_exists('../../asset/' . $fotoLama)){
+            unlink('../../asset/' . $fotoLama);
+        }
+    move_uploaded_file($tmp_name, '../../asset/' . $fotoBaru);
+    $foto = $fotoBaru;
+    }else{
+        $foto = $fotoLama;
+    }
+
+    //Query untuk update
+    $queryUpdate = $koneksi->prepare("UPDATE sekolah SET nama_sekolah = ?, email_sekolah= ?, notelp_sekolah= ?, alamat_sekolah = ?, website_sekolah = ?, foto = ? WHERE id_sekolah = 1 ");
+    $queryUpdate->bind_param("ssssss", $nama_sekolah, $email_sekolah, $notelp_sekolah, $alamat_sekolah, $website_sekolah, $foto);
     if ($queryUpdate->execute()) {
         $_SESSION['sukses'] = "Berhasil mengupdate data";
     }else{
@@ -71,7 +101,7 @@ if ($action === 'update') {
     
     </div>
 
-    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+   <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -80,64 +110,63 @@ if ($action === 'update') {
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
-                <div class="modal-body">
-                    <input type="hidden" id="id_kelas" name="id_kelas">
-                    <div class="row">
-                        <div class="col-md-6">
+            <div class="modal-body">                   
+                <div class="row">
+                    <div class="col-md-6">
+                        <form id="Update" method="post" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="nama_sekolah">Nama Sekolah</label>
-                                <input type="text" class="form-control" value=""  name="nama_sekolah" required>
+                                <input type="text" class="form-control" name="nama_sekolah" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Email</label>
-                                <input type="email" class="form-control" value=""  name="email_sekolah" required>
+                                <input type="email" class="form-control" name="email_sekolah" required>
                             </div>
                             <div class="form-group">
                                 <label for="">No. Telp</label>
-                                <input type="text" class="form-control" value=""  name="notelp_sekolah" required>
+                                <input type="text" class="form-control" name="notelp_sekolah" required>
                             </div>
                             <div class="form-group">
                                 <label for="">Website</label>
-                                <input type="text" class="form-control" value="" id="website_sekolah" name="website_sekolah" required>
+                                <input type="text" class="form-control" name="website_sekolah" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="">Logo Sekolah</label>
-                                <input type="file" class="form-control">
+                                <input type="file" name="foto" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="">Alamat</label>
-                                <textarea style="height: 120px" name="alamat_sekolah" id="" class="form-control"></textarea>
+                                <textarea style="height: 120px" name="alamat_sekolah" class="form-control"></textarea>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" id="updateForm" class="btn btn-primary">Save changes</button>
+                    <button type="submit" id="btn-update" class="btn btn-primary">Save changes</button>
                 </div>
+                </form>
         </div>
     </div>
-</div>    
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script>
     $(document).ready(function(){
         data();
-        $("#updateForm").on('click', function(e){
+        $("#Update").on('submit', function(e){
             e.preventDefault()
-            const nama_sekolah = $('input[name = "nama_sekolah"]').val();
-            const email_sekolah = $('input[name = "email_sekolah"]').val();
-            const notelp_sekolah = $('input[name = "notelp_sekolah"]').val();
-            const alamat_sekolah = $('textarea[name = "alamat_sekolah"]').val();
-            const website_sekolah = $('input[name = "website_sekolah"]').val();
+            $("#btn-update").attr('disabled', true).text("Loading...")
             $.ajax({
                 url : 'profile.php?action=update',
                 type : 'POST',
-                data : {nama_sekolah, email_sekolah, notelp_sekolah, alamat_sekolah, website_sekolah},
+                data : new FormData(this),
+                processData: false, // Jangan memproses data secara default (karena FormData sudah menanganinya)
+                contentType: false, // Jangan set tipe konten secara manual (FormData menangani otomatis)
+                cache: false,
                 success : function(response){
                     Swal.fire({
                     title: 'Berhasil!',
@@ -147,6 +176,7 @@ if ($action === 'update') {
                     showConfirmButton: false
                 });
                 $("#updateModal").modal('hide');
+                $("#btn-update").attr('disabled', false).text("Save change")
                     data();
                 }
             })
@@ -162,8 +192,8 @@ if ($action === 'update') {
             success: function(data){
                 html += `<div class="container">
                     <header>
-                        <div class="image-conteiner bg-shadow mb-2">
-                        <img src="../../asset/logo.png" style="height: 90px" alt="">
+                        <div class="image-conteiner bg-shadow mb-2" style="object-fit:cover;">
+                        <img src="../../asset/${data.foto}" style="height: 90px; " alt="">
                         </div>
                         <h3>${data.nama_sekolah}</h3>
                     </header>

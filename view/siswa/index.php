@@ -8,6 +8,12 @@ if(!isset($_SESSION['username'])){
     echo '<script language="javascript">alert("Harap login terlebih dahulu"); document.location="'. $url .'"</script>';
     exit;
   }
+  $allowed_role = ['admin', 'operator'];
+  if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
+      session_destroy();
+      echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
+      exit();
+  }
 $sukses = "";
 $error = "";
 
@@ -54,7 +60,9 @@ if($action === 'hapus'){
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <a href="<?= BASE_URL ?>/view/siswa/insert.php" class="btn btn-sm btn-success"><i class="fas fa-plus"></i> tambah data</a>
+        <?php if($_SESSION['role'] === 'admin') { ?> 
         <button id="import" class="btn btn-sm btn-warning"><i class="fas fa-file-import"></i> import data</button>
+        <?php } ?>
         <a href="<?= BASE_URL ?>/view/siswa/print_all.php" target="_blank" onclick="openPrintWindow(event)" class="btn btn-sm btn-primary"><i class="fas fa-print"></i> Print Card All</a>
     </div>
     <div class="card-body">
