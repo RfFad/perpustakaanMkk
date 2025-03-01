@@ -51,11 +51,11 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
                             <option disabled selected>-- Pilih Data --</option>
                             <?php 
                             include '../../koneksi.php';
-                            $querySiswa = $koneksi->prepare("SELECT * FROM siswa");
+                            $querySiswa = $koneksi->prepare("SELECT s.*, k.nama_kelas, k.tingkat, CONCAT(k.tingkat, j.singkatan, k.nama_kelas) AS nama_kelas FROM siswa s JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan  order by nis ASC");
                             $querySiswa->execute();
                             $resultSiswa = $querySiswa->get_result();
                             while ($rowSiswa = $resultSiswa->fetch_array()) { ?>
-                                <option value="<?= $rowSiswa['id_siswa'] ?>"><?= $rowSiswa['nama'] ?></option>
+                                <option value="<?= $rowSiswa['id_siswa'] ?>"><?= $rowSiswa['nis'] ?> - <?= $rowSiswa['nama'] ?> - <?= $rowSiswa['nama_kelas'] ?></option>
                             <?php } ?>
                         </select>
                     </div>

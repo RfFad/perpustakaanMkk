@@ -70,7 +70,28 @@ if(isset($_POST['update'])){
             $sql->close();
 }
 ?>
-
+ <style>
+        .modal-body {
+            font-size: 16px;
+        }
+        .table-info td {
+            padding: 10px;
+            vertical-align: middle;
+        }
+        .signature {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .signature img {
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 5px;
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
 <!-- DataTales Example -->
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -89,10 +110,11 @@ if(isset($_POST['update'])){
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-striped tabelData" id="example1" width="100%" cellspacing="0">
+            <table class="table table-striped tabelData table-responsive" id="example1" width="100%" cellspacing="0">
                 <thead class="thead-dark">
                     <tr>
                     <th style="width:1%;">No</th>
+                        <th>Nip/Nis</th>
                         <th>Nama Pengunjung</th>
                         <th>Kelas</th>
                         <th>Tanggal Kunjungan</th>
@@ -105,6 +127,7 @@ if(isset($_POST['update'])){
                 <tfoot>
                     <tr>
                         <th style="width:1%;">No</th>
+                        <th>Nip/Nis</th>
                         <th>Nama Pengunjung</th>
                         <th>Kelas</th>
                         <th>Tanggal Kunjungan</th>
@@ -122,13 +145,15 @@ if(isset($_POST['update'])){
                         $query = "SELECT 
                                 k.id_kunjungan, 
                                 COALESCE(s.nama, a.nama_anggota) AS nama_pengunjung,
+                                COALESCE(s.alamat, a.alamat) AS alamat_pengunjung,
                                 CONCAT(kl.tingkat, ' ', j.singkatan, ' ', kl.nama_kelas) AS kelas,
                                 k.tanggal_kunjungan, 
                                 k.keperluan_kunjungan, 
                                 k.waktu_masuk, 
                                 k.waktu_keluar, 
                                 k.tujuan, 
-                                k.ttd
+                                k.ttd,
+                                COALESCE(s.nis, a.nip) AS nip_nis
                             FROM kunjungan k
                             LEFT JOIN siswa s ON k.id_siswa = s.id_siswa
                             LEFT JOIN data_keanggotaan a ON k.id_anggota = a.id_anggota
@@ -139,13 +164,15 @@ if(isset($_POST['update'])){
                         $query = "SELECT 
                                 k.id_kunjungan, 
                                 COALESCE(s.nama, a.nama_anggota) AS nama_pengunjung,
+                                COALESCE(s.alamat, a.alamat) AS alamat_pengunjung,
                                 CONCAT(kl.tingkat, ' ', j.singkatan, ' ', kl.nama_kelas) AS kelas,
                                 k.tanggal_kunjungan, 
                                 k.keperluan_kunjungan, 
                                 k.waktu_masuk, 
                                 k.waktu_keluar, 
                                 k.tujuan, 
-                                k.ttd
+                                k.ttd,
+                                 COALESCE(s.nis, a.nip) AS nip_nis
                             FROM kunjungan k
                             LEFT JOIN siswa s ON k.id_siswa = s.id_siswa
                             LEFT JOIN data_keanggotaan a ON k.id_anggota = a.id_anggota
@@ -160,6 +187,7 @@ if(isset($_POST['update'])){
                      ?>
                       <tr>
                         <td><?= $no ++ ?></td>
+                        <td><?= $row['nip_nis']?></td>
                         <td><?= $row['nama_pengunjung']?></td>
                         <td><?= isset($row['kelas']) ? $row['kelas'] : 'Anggota' ?></td>
                         <td><?= date("Y-m-d", strtotime($row['tanggal_kunjungan'])); ?></td>
@@ -169,7 +197,7 @@ if(isset($_POST['update'])){
                        
                         <td>
                             <button type="button" class="btn btn-danger btn-sm hapus-btn" data-idhapus="<?= $row['id_kunjungan'] ?>">Hapus</button>
-                            <button type="button" class="btn btn-primary btn-sm">Detail</button>
+                            <button type="button" onclick="showModalUpdate('<?= $row['nip_nis'] ?>', '<?= $row['nama_pengunjung'] ?>', '<?= isset($row['kelas']) ? $row['kelas'] : 'Anggota' ?>', '<?= date('Y-m-d', strtotime($row['tanggal_kunjungan'])); ?>', '<?= $row['keperluan_kunjungan'] ?>', '<?= date('H:i', strtotime($row['waktu_masuk'])) ?>', '<?= date('H:i', strtotime($row['waktu_keluar'])) ?>', '<?= $row['alamat_pengunjung'] ?>')" class="btn btn-primary btn-sm">Detail</button>
                         </td>
                     </tr>   
                     <?php } ?>
@@ -181,49 +209,76 @@ if(isset($_POST['update'])){
 
 </div>
 <!-- /.container-fluid -->  
-<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateModalLabel">Update Data Jurusan</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalTitle">Informasi Pengunjung</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" action="">
-                <div class="modal-body">
-                    <input type="hidden" id="id_kelas" name="id_kelas">
-                    <div class="form-group">
-                        <label for="nama_kelas">Nama kelas</label>
-                        <input type="number" class="form-control" id="nama_kelas" name="nama_kelas" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tingkatan">tingkatan</label>
-                        <select name="tingkat" id="tingkat" class="form-control" require>
-                            <option disabled selected>Selected</option>
-                            <option value="X">X</option>
-                            <option value="XI">XI</option>
-                            <option value="XII">XII</option>
-                          
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="update" class="btn btn-primary"><i class="fas fa-save"></i> Save changes</button>
-                </div>
-            </form>
+            <div class="modal-body">
+                <table class="table table-bordered ">
+                    <tr>
+                        <td><strong>Nis/Nip</strong></td>
+                        <td id="nis-nip">122222</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nama Pengunjung</strong></td>
+                        <td id="nama_pengunjung">John Doe</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kelas</strong></td>
+                        <td id="kelas">XII IPA 1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alamat pengunjung</strong></td>
+                        <td id="alamat"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanggal Kunjungan</strong></td>
+                        <td id="tanggal_kunjungan">28 Februari 2024</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Keperluan</strong></td>
+                        <td id="keperluan">Membaca buku di perpustakaan</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Waktu Masuk</strong></td>
+                        <td id="waktu_masuk">08:00</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Waktu Keluar</strong></td>
+                        <td id="waktu_keluar">09:30</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanda Tangan</strong></td>
+                        <td class="signature">
+                            <img id="ttd" src="../../asset/ttd_kunjungan/ttd_1740737833.png" alt="Tanda Tangan">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
         </div>
     </div>
-</div>    
+</div>   
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script>
-    function showModalUpdate(nama_kelas, tingkat, id_kelas){
-        $('#nama_kelas').val(nama_kelas)
-        $('#tingkat').val(tingkat).attr('selected', true);
-        $('#id_kelas').val(id_kelas)
-        $('#updateModal').modal("show")
+    function showModalUpdate(nipNis, nama, kelas, tgl_kunjungan, keperluan, waktu_masuk, waktu_keluar, alamat){
+        $('#nis-nip').text(nipNis)
+        $('#nama_pengunjung').text(nama)
+        $('#kelas').text(kelas)
+        $('#tanggal_kunjungan').text(tgl_kunjungan)
+        $('#keperluan_kunjungan').text(keperluan)
+        $('#waktu_masuk').text(waktu_masuk)
+        $('#waktu_keluar').text(waktu_keluar)
+        $('#alamat').text(alamat)
+        $('#infoModal').modal("show")
     }
     $(document).ready(function(){
         
