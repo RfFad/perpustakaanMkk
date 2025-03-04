@@ -21,6 +21,7 @@ $judul = $_POST['judul'];
 $pengarang = $_POST['pengarang'];
 $penerbit = $_POST['penerbit'];
 $tahun_terbit = $_POST['tahun_terbit'];
+$stok = $_POST['stok'];
 $barcodeValue = $_POST['barcode'];
 $fotoBaru = $_FILES['foto']['name'];
 $tmp_name = $_FILES['foto']['tmp_name'];
@@ -70,8 +71,8 @@ $barcode = $generator->getBarcode($barcodeValue, $generator::TYPE_CODE_128);
 $barcodeFilePathBaru = '../../asset/barcodes/' . $barcodeValue . '.png';
 file_put_contents($barcodeFilePathBaru, $barcode);
 
-$query = $koneksi->prepare("UPDATE buku SET judul = ?, pengarang = ?, penerbit = ?, tahun_terbit = ?, foto = ?, barcode = ? WHERE id_buku = ?");
-$query->bind_param("ssssssi", $judul, $pengarang, $penerbit, $tahun_terbit, $foto, $barcodeValue, $id_buku);
+$query = $koneksi->prepare("UPDATE buku SET judul = ?, pengarang = ?, penerbit = ?, tahun_terbit = ?, foto = ?, barcode = ?, stok=? WHERE id_buku = ?");
+$query->bind_param("ssssssii", $judul, $pengarang, $penerbit, $tahun_terbit, $foto, $barcodeValue, $stok, $id_buku);
 
 if ($query->execute()) {
     $_SESSION['sukses'] = "Berhasil mengupdate data buku!";

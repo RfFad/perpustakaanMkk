@@ -274,7 +274,7 @@ if(isset($_POST['update'])){
         $('#nama_pengunjung').text(nama)
         $('#kelas').text(kelas)
         $('#tanggal_kunjungan').text(tgl_kunjungan)
-        $('#keperluan_kunjungan').text(keperluan)
+        $('#keperluan').text(keperluan)
         $('#waktu_masuk').text(waktu_masuk)
         $('#waktu_keluar').text(waktu_keluar)
         $('#alamat').text(alamat)

@@ -33,6 +33,10 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
                                     <label for="pengarang">Pengarang</label>
                                     <input type="text" name="pengarang" class="form-control" placeholder="Pengarang" require>
                             </div>
+                            <div class="form-group">
+                                    <label for="stok">Stok/Jumlah</label>
+                                    <input type="number" name="stok" class="form-control" value="1" require>
+                            </div>
                             <label for="">Cover Buku</label>
                             <div class="custom-file">
                                 <input type="file" accept="image/*" id="foto" name="foto" class="custom-file-input" id="customFile">

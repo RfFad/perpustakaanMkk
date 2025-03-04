@@ -21,6 +21,7 @@ $judul = $_POST['judul'];
 $pengarang = $_POST['pengarang'];
 $penerbit = $_POST['penerbit'];
 $tahun_terbit = $_POST['tahun_terbit'];
+$stok = $_POST['stok'];
 $foto = $_FILES['foto']['name'];
 $tmp_name = $_FILES['foto']['tmp_name'];
 
@@ -54,8 +55,8 @@ if ($count > 0) {
 }
 
 
-$query = $koneksi->prepare("INSERT INTO buku (judul, pengarang, penerbit, tahun_terbit, foto, barcode) VALUES (?, ?, ?, ?, ?, ?)");
-$query->bind_param("ssssss", $judul, $pengarang, $penerbit, $tahun_terbit, $foto, $barcodeValue);
+$query = $koneksi->prepare("INSERT INTO buku (judul, pengarang, penerbit, tahun_terbit, foto, barcode, stok) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$query->bind_param("ssssssi", $judul, $pengarang, $penerbit, $tahun_terbit, $foto, $barcodeValue, $stok);
 
 if ($query->execute()) {
     $_SESSION['sukses'] = "Berhasil menambahkan buku!";

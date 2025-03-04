@@ -84,7 +84,7 @@
                                 <div class="card-body box-profile">
                                     <div class="text-center profile-photo">
                                         <div class="profile-status-border bg-secondary">
-                                            <img class="profile-user-img img-fluid rounded-circle" src="profile.jpg" id="foto_siswa" alt="User profile picture">
+                                            <img class="profile-user-img img-fluid rounded-circle" src="<?= BASE_URL ?>/asset/profile.jpg" id="foto_siswa" alt="User profile picture">
                                         </div>
                                     </div>
                                     <h4 class="profile-username text-center" id="username_profile"><?= $_SESSION['nama'] ?></h4>

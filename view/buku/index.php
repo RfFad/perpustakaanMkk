@@ -193,6 +193,7 @@ if(isset($_GET['action'])){
                                 <li><strong>Penerbit</strong>: <?= htmlspecialchars($row['penerbit']) ?></li>
                                 <li><strong>Pengarang</strong>: <?= htmlspecialchars($row['pengarang']) ?></li>
                                 <li><strong>Tahun Terbit</strong>: <?= htmlspecialchars($row['tahun_terbit']) ?></li>
+                                <li><strong>Stok/Jumlah</strong>: <?= htmlspecialchars($row['stok']) ?></li>
                             </ul>
                             <button type="button" data-idhapus="<?= $row['id_buku'] ?>" 
                                     class="btn btn-sm btn-primary" 
@@ -202,6 +203,7 @@ if(isset($_GET['action'])){
                                                          '<?= addslashes($row['tahun_terbit']) ?>', 
                                                          '<?= isset($row['foto']) ? addslashes($row['foto']) : ''   ?>', 
                                                          '<?= addslashes($row['barcode']) ?>', 
+                                                         '<?= addslashes($row['stok']) ?>', 
                                                          '<?= addslashes($row['id_buku']) ?>')" 
                                     data-toggle="modal">
                                 <i class="fas fa-edit"></i> Detail
@@ -251,6 +253,10 @@ if(isset($_GET['action'])){
         <div class="form-group">
             <label for="judul">Judul</label>
             <input type="text" id="judul" name="judul" class="form-control" placeholder="Judul" required>
+        </div>
+        <div class="form-group">
+            <label for="stok">Stok</label>
+            <input type="number" id="stok" name="stok" class="form-control" placeholder="Pengarang" required>
         </div>
         <div class="form-group">
             <label for="pengarang">Pengarang</label>
@@ -346,11 +352,12 @@ if(isset($_GET['action'])){
         var height = 650;
         window.open(url, '_blank', `width=${width},height=${height},top=100,left=200`);
     }
-    function modalUpdate(judul, pengarang, penerbit, tahun_terbit, foto, barcode, id_buku){
+    function modalUpdate(judul, pengarang, penerbit, tahun_terbit, foto, barcode, stok, id_buku){
        
         $('#judul').val(judul)
         $('#pengarang').val(pengarang)
         $('#penerbit').val(penerbit)
+        $('#stok').val(stok)
         $('#tahun_terbit').val(tahun_terbit)
         $('#foto_lama').val(foto)
         $('#barcode').val(barcode)
