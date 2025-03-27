@@ -10,18 +10,25 @@ if(!isset($_SESSION['username'])){
     echo '<script language="javascript">alert("Harap login terlebih dahulu"); document.location="'. $url .'"</script>';
     exit;
   }
-
-if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
-    $urlBack = BASE_URL . "/view/dashboard/index.php";
-    echo '<script language="javascript">alert("Anda tidak bisa mengakses halaman ini, karena anda bukan admin!"); document.location="' . $urlBack . '"</script>';
-    exit;
-}
+  $allowed_role = ['admin', 'operator'];
+  if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
+      session_destroy();
+      echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
+      exit();
+  }
+  
 
 ?>
 <style>
      canvas {
             border: 1px solid #000;
         }
+    .form-control{
+        border-color: #000;
+    }
+    label{
+        color: #000;
+    }
 </style>
 <div class="container-fluid">
     <div class="d-flex justify-content-center vh-50">
@@ -51,7 +58,7 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
                             <option disabled selected>-- Pilih Data --</option>
                             <?php 
                             include '../../koneksi.php';
-                            $querySiswa = $koneksi->prepare("SELECT s.*, k.nama_kelas, k.tingkat, CONCAT(k.tingkat, j.singkatan, k.nama_kelas) AS nama_kelas FROM siswa s JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan  order by nis ASC");
+                            $querySiswa = $koneksi->prepare("SELECT s.*, k.nama_kelas, k.tingkat, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas FROM siswa s JOIN kelas k ON s.id_kelas = k.id_kelas JOIN jurusan j ON s.id_jurusan = j.id_jurusan  order by nis ASC");
                             $querySiswa->execute();
                             $resultSiswa = $querySiswa->get_result();
                             while ($rowSiswa = $resultSiswa->fetch_array()) { ?>
@@ -126,7 +133,7 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
     </div>
 
     <div class="card-footer">
-        <a href="<?= BASE_URL ?>/view/siswa/index.php" class="btn btn-secondary">
+        <a href="<?= BASE_URL ?>/view/kunjungan/index.php" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
         <button type="submit" name="simpan" class="btn btn-primary">

@@ -67,12 +67,13 @@ if($action === 'hapus'){
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered tabelData" id="example1" width="100%" cellspacing="0">
-                <thead>
+            <table class="table table-bordered table-striped tabelData" id="example1" width="100%" cellspacing="0">
+                <thead class="thead-dark">
                     <tr>
                         <th style="width:1%;" class="text-center">No</th>
                         <th>Nis</th>
                         <th>Nama Siswa</th>
+                        <th>Jk</th>
                         <th>Kelas</th>
                         <th>No Telepon</th>
                         <th>Alamat</th>
@@ -84,6 +85,7 @@ if($action === 'hapus'){
                     <th style="width:1%;" class="text-center">No</th>
                         <th>Nis</th>
                         <th>Nama Siswa</th>
+                        <th>Jk</th>
                         <th>Kelas</th>
                         <th>No Telepon</th>
                         <th>Alamat</th>
@@ -101,13 +103,14 @@ if($action === 'hapus'){
                         <td><?= $no ++ ?></td>
                         <td><?= $row['nis'] ?></td>
                         <td><?= $row['nama'] ?></td>
+                        <th><?= $row['jk'] ?></th>
                         <td><?= $row['tingkat'] ?> <?= $row['singkatan'] ?> <?= $row['nama_kelas'] ?></td>
                         <td><?= $row['telepon'] ?></td>
                         <td><?= $row['alamat'] ?></td>
                         <td>
-                            <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= $row['nis'] ?>', '<?= $row['nama'] ?>', '<?= $row['id_kelas'] ?>', '<?= $row['id_jurusan'] ?>', '<?= $row['telepon'] ?>', '<?= $row['alamat'] ?>', '<?= $row['foto'] ?>', '<?= $row['id_siswa'] ?>', '<?= $row['barcode'] ?>')" class="btn btn-primary"><i class="fas fa-edit"></i> edit</a>
+                            <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= $row['nis'] ?>', '<?= $row['nama'] ?>', '<?= $row['id_kelas'] ?>', '<?= $row['id_jurusan'] ?>', '<?= $row['telepon'] ?>', '<?= $row['alamat'] ?>', '<?= $row['foto'] ?>', '<?= $row['id_siswa'] ?>', '<?= $row['barcode'] ?>', '<?= $row['jk'] ?>')" class="btn btn-primary"><i class="fas fa-edit"></i> edit</a>
                             <?php if($_SESSION['role'] === 'admin') { ?> 
-                            <a href="#"  class="btn btn-danger hapus-btn" data-idhapus = "<?= $row['id_siswa'] ?>"><i class="fas fa-trash"></i> hapus</a>
+                            <button type="button"  class="btn btn-danger hapus-btn" data-idhapus = "<?= $row['id_siswa'] ?>"><i class="fas fa-trash"></i> hapus</button>
                             <?php } ?>
                         </td>
                     </tr>   
@@ -186,6 +189,13 @@ if($action === 'hapus'){
                         </div>
                         <div class="col-md-5">
                             <div class="form-group">
+                                <label for="">Jenis Kelamin</label>
+                                <select name="jk" id="jk" class="form-control">
+                                    <option value="laki-laki">Laki-laki</option>
+                                    <option value="perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="">No Telepon</label>
                                 <input type="number" placeholder="Masukkan No Telepon" id="telepon" name="telepon" class="form-control">
                             </div>
@@ -215,7 +225,7 @@ if($action === 'hapus'){
 </div>
 
 <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="updateModalLabel">Import Data Siswa</h5>
@@ -225,6 +235,9 @@ if($action === 'hapus'){
             </div>
             <form method="POST" action="import.php" id="import-form" enctype= "multipart/form-data">
                 <div class="modal-body">
+                    <div class="peringatan ">
+                        <p class="alert alert-warning">Samakan kolum data siswa pada excel dengan kolum data siswa yang ada di web ini!</p>
+                    </div>
                     <div class="form-group">
                         <label for="">Upload File Excel!</label>
                         <input type="file" name="file" class="form-control">
@@ -250,7 +263,7 @@ if($action === 'hapus'){
     })
 
     
-    function showModalUpdate(nis, nama, id_kelas, id_jurusan, telepon, alamat, foto, id_siswa, barcode){
+    function showModalUpdate(nis, nama, id_kelas, id_jurusan, telepon, alamat, foto, id_siswa, barcode, jk){
         $('#nis').val(nis)
         $('#nama').val(nama)
         $('#kelas').val(id_kelas).attr('selected', true);
@@ -260,6 +273,7 @@ if($action === 'hapus'){
         $('#id_siswa').val(id_siswa);
         $('#barcode').val(barcode);
         $('#codeBar').text(barcode);
+        $("#jk").val(jk);
         if(!foto){
         $('#preview').attr('src', `<?= BASE_URL ?>/asset/profile.jpg`);
 
@@ -272,20 +286,9 @@ if($action === 'hapus'){
         $('#updateModal').modal("show")
     }
 
-    $(document).ready(function(){
-        //name file
-        $('.custom-file').on('change', function(){
-            var fileName = e.target.files[0].name;
-            // Perbarui label dengan nama file
-            e.target.nextElementSibling.innerHTML = fileName;
-        })
-        //import
-        $('#import').on('click', function(){
-            $('#importModal').modal("show");
-        })
-        //hapus
-        $('.hapus-btn').on('click', function(){
-            const idhapus = $(this).data('idhapus')
+    //hapus
+    $(document).on('click', '.hapus-btn', function(){
+        const idhapus = $(this).data('idhapus')
                         Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Anda tidak akan dapat mengembalikan data ini!",
@@ -300,8 +303,18 @@ if($action === 'hapus'){
                     window.location.href = `<?= BASE_URL ?>/view/siswa/index.php?action=hapus&id=${idhapus}`;
                 }
                 });
-  
-        });
+    })
+    $(document).ready(function(){
+        //name file
+        $('.custom-file').on('change', function(){
+            var fileName = e.target.files[0].name;
+            // Perbarui label dengan nama file
+            e.target.nextElementSibling.innerHTML = fileName;
+        })
+        //import
+        $('#import').on('click', function(){
+            $('#importModal').modal("show");
+        })
         //foto preview
         $("#foto").on("change", function(e){
             const fotoInput = e.target 

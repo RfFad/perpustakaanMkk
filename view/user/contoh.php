@@ -82,7 +82,7 @@ if (isset($_POST['update'])) {
 <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Data User</h1>
+<h1 class="h3 mb-2 text-gray-800" id="contohSaja">Data User</h1>
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -215,7 +215,17 @@ if (isset($_POST['update'])) {
         $('#id_admin').val(id_admin)
         $('#updateModal').modal("show")
     }
+    function dataContoh(){
+        $.ajax({
+            url : "http://localhost:5000/contoh",
+            type: "GET",
+            success : function(data){
+                $("#contohSaja").text(data.messages)
+            }
+        })
+    }
     $(document).ready(function() {
+        dataContoh()
         $('.btn-hapus').on('click', function(){
             const idhapus = $(this).data('idhapus');
             Swal.fire({

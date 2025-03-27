@@ -182,7 +182,7 @@ if(isset($_GET['action'])){
             <div class="card mb-4">
                 <div class="row no-gutters">
                     <div class="col-5">
-                        <img src="<?= BASE_URL ?>/asset/buku/<?= htmlspecialchars($row['foto']) ?>" 
+                        <img src="<?= $row['foto'] ? BASE_URL . '/asset/buku/' . htmlspecialchars($row['foto']) : BASE_URL . '/asset/cover_buku.png' ?>" 
                              alt="Image" class="img-fluid" 
                              style="width: 100%; height: 200px; object-fit: cover;">
                     </div>
@@ -361,7 +361,11 @@ if(isset($_GET['action'])){
         $('#tahun_terbit').val(tahun_terbit)
         $('#foto_lama').val(foto)
         $('#barcode').val(barcode)
+        if(foto){
         $('#imgCover').attr('src', `<?= BASE_URL ?>/asset/buku/${foto}`)
+        }else{
+        $("#imgCover").attr('src', '<?= BASE_URL ?>/asset/cover_buku.png')
+        }
         $('#coverBar').attr('src', `<?= BASE_URL ?>/asset/barcodes/${barcode}.png`)
         $("#codeBar").text(barcode)
         $("#hapusid").val(id_buku)

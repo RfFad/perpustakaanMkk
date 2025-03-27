@@ -20,6 +20,7 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
 $id_siswa = $_POST['id_siswa'];
 $nis = $_POST['nis'];
 $nama = $_POST['nama'];
+$jk = $_POST['jk'];
 $id_kelas = $_POST['id_kelas'];
 $id_jurusan = $_POST['id_jurusan'];
 $telepon = $_POST['telepon'];
@@ -72,8 +73,8 @@ $barcode = $generator->getBarcode($barcodeValue, $generator::TYPE_CODE_128);
 $barcodeFilePathBaru = '../../asset/barcode_siswa/' . $barcodeValue . '.png';
 file_put_contents($barcodeFilePathBaru, $barcode);
 
-$query = $koneksi->prepare("UPDATE siswa SET nis= ?, nama= ?, id_kelas= ?, id_jurusan= ?, telepon= ?, alamat= ?, foto= ?, barcode= ? WHERE id_siswa = ?");
-$query->bind_param("ssiissssi", $nis, $nama, $id_kelas, $id_jurusan, $telepon, $alamat, $foto, $barcodeValue, $id_siswa);
+$query = $koneksi->prepare("UPDATE siswa SET nis= ?, nama= ?, id_kelas= ?, id_jurusan= ?, telepon= ?, alamat= ?, foto= ?, barcode= ?, jk = ? WHERE id_siswa = ?");
+$query->bind_param("ssiisssssi", $nis, $nama, $id_kelas, $id_jurusan, $telepon, $alamat, $foto, $barcodeValue, $jk, $id_siswa);
 if($query->execute()){
     $_SESSION['sukses'] = "Berhasil mengupdate data siswa!";
     header('Location: index.php');

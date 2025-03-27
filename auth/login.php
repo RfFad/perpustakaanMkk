@@ -31,6 +31,8 @@ if(isset($_POST['login'])){
         $user = $result->fetch_assoc();
         
         if(password_verify($password,$user['password'])){
+            session_regenerate_id(true);
+
             $_SESSION['id_admin'] = $user['id_admin'];
             $_SESSION['nama'] = $user['nama'];
             $_SESSION['username'] = $user['username'];
@@ -55,7 +57,12 @@ if(isset($_POST['login'])){
     }else{
         $error = "Username Salah";
     }
-}else
+}
+
+$queryData = $conn->prepare("SELECT * FROM sekolah");
+$queryData->execute();
+$resultData = $queryData->get_result();
+$rowData = $resultData->fetch_assoc();
 ?>
 
 
@@ -102,7 +109,7 @@ if(isset($_POST['login'])){
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">Selamat Datang di Perpustakaan <br> <?= $rowData['nama_sekolah'] ?>!</h1>
                                     </div>
                                     <?php if (isset($error)): ?>
                                         <div class="alert alert-danger d-flex align-items-center" style="height: 35px; font-size: 15px;" role="alert">

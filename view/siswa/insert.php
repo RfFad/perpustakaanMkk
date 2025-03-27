@@ -45,7 +45,15 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
                             <div class="form-group">
                                     <label for="nama">Nama</label>
                                     <input type="text" name="nama" class="form-control" placeholder="Masukkan Nama" require>
-                            </div>  
+                            </div> 
+                            <div class="form-group">
+                                <label for="">Jenis Kelamin</label>
+                                <select name="jk" id="" class="form-control">
+                                    <option selected disabled>-- Pilih Jenis Kelamin --</option>
+                                    <option value="laki-laki">Laki-laki</option>
+                                    <option value="perempuan">Perempuan</option>
+                                </select>
+                            </div> 
                             <label for="">Kelas</label>
                            <div class="input-group mb-3">
                                 <div class="input-group-prepend">

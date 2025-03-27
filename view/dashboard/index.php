@@ -16,8 +16,36 @@ if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
       echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
       exit();
 }
-?>
+// Grafik Kunjungan
+$sql = $koneksi->prepare("SELECT DATE(tanggal_kunjungan) AS tanggal, COUNT(*) AS jumlah FROM kunjungan GROUP BY tanggal ORDER BY tanggal ASC");
+$sql->execute();
+$result = $sql->get_result();
 
+$tanggal_kunjungan = [];
+$jumlah_kunjungan = [];
+
+while($row = $result->fetch_assoc()){
+    $tanggal_kunjungan[] = $row['tanggal'];
+    $jumlah_kunjungan[] = $row['jumlah'];
+}
+$result->close();
+
+// Grafik Peminjaman
+$sqlPeminjaman = $koneksi->prepare("SELECT DATE(tanggal_pinjam) AS tanggal, COUNT(*) AS jumlah FROM peminjaman GROUP BY tanggal ORDER BY tanggal ASC");
+$sqlPeminjaman->execute();
+$resultPinjam = $sqlPeminjaman->get_result();
+
+$tanggal_peminjaman = [];
+$jumlah_peminjaman = [];
+
+while($row = $resultPinjam->fetch_assoc()){
+    $tanggal_peminjaman[] = $row['tanggal'];
+    $jumlah_peminjaman[] = $row['jumlah'];
+}
+$resultPinjam->close();
+//end kunjungan
+?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="container-fluid">
 
@@ -30,7 +58,7 @@ if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
 
 <!-- Content Row -->
  
-<div class="row">
+<div class="row d-flex justify-content-center">
 
     <!-- Earnings (Monthly) Card Example -->
     <a href="../buku/index.php" class="col-xl-3 col-md-6 mb-4 text-decoration-none" id="card">
@@ -39,6 +67,7 @@ if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
             <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        DATA BUKU
                     </div>
                     <?php
                         $query = $koneksi->prepare("SELECT COUNT(*) AS count_buku FROM buku");
@@ -87,6 +116,7 @@ if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
 </a>
 
     <!-- Earnings (Monthly) Card Example -->
+    <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin') { ?> 
     <a href="../jurusan/index.php" class="col-xl-3 col-md-6 mb-4 text-decoration-none" id="card">
     <div class="card border-left-primary shadow h-100 py-2">
         <div class="card-body">
@@ -139,8 +169,9 @@ if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
         </div>
     </div>
 </a>
+<?php } ?>
 <!-- User -->
-<a href="../user/index.php" class="col-xl-6 col-md-6 mb-4 text-decoration-none" id="card">
+<a href="../user/index.php" class="col-xl-4 col-md-6 mb-4 text-decoration-none" id="card">
     <div class="card border-left-success shadow h-100 py-2">
         <div class="card-body">
             <div class="row no-gutters align-items-center">
@@ -168,7 +199,7 @@ if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
 <!-- End User -->
   
 <!-- peminjaman -->
-<a href="../peminjaman/index.php" class="col-xl-6 col-md-6 mb-4 text-decoration-none" id="card">
+<a href="../peminjaman/index.php" class="col-xl-4 col-md-6 mb-4 text-decoration-none" id="card">
     <div class="card border-left-success shadow h-100 py-2">
         <div class="card-body">
             <div class="row no-gutters align-items-center">
@@ -194,6 +225,53 @@ if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
     </div>
 </a>
 <!-- End peminjaman -->
+<!-- kunjungan -->
+<a href="../kunjungan/index.php" class="col-xl-4 col-md-6 mb-4 text-decoration-none" id="card">
+    <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        DATA kunjungan
+                    </div>
+                    <?php
+                        $querykunjungan = $koneksi->prepare("SELECT COUNT(*) AS count_kunjungan FROM kunjungan");
+                        $querykunjungan->execute();
+                        $resultkunjungan = $querykunjungan->get_result();
+                        $getkunjungan = $resultkunjungan->fetch_assoc();
+                        ?>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <?= $getkunjungan['count_kunjungan'] ?>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fas fa-book-open fa-2x text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>
+<!-- End kunjungan -->
+<div class="col-md-12 mb-3">
+<div class="card">
+    <div class="card-header">
+    <h6 class="m-0 font-weight-bold text-primary">Grafik Pengunjung</h6>
+    </div>
+    <div class="card-body">
+    <canvas id="myChart" style = "width: 100%; height: 400px;"></canvas>
+    </div>
+</div>
+</div>
+<div class="col-md-12 mb-3">
+<div class="card">
+    <div class="card-header">
+    <h6 class="m-0 font-weight-bold text-primary">Grafik Peminjaman</h6>
+    </div>
+    <div class="card-body">
+    <canvas id="myChartPeminjaman" style = "width: 100%; height: 400px;"></canvas>
+    </div>
+</div>
+</div>
 
 <!-- Content Row -->
 
@@ -201,4 +279,60 @@ if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
 
 </div>
 <!-- /.container-fluid -->
+<script>
+        // Grafik Kunjungan
+        const ctx = document.getElementById('myChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: <?php echo json_encode($tanggal_kunjungan) ?>,
+        datasets: [{
+            label: 'Jumlah Kunjungan',
+            data: <?php echo json_encode($jumlah_kunjungan) ?>,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,  // Agar hanya menampilkan angka bulat
+                    precision: 0  // Menghindari desimal
+                }
+            }
+        }
+    }
+});
+
+// Grafik Peminjaman
+const ctxPinjam = document.getElementById('myChartPeminjaman').getContext('2d');
+new Chart(ctxPinjam, {
+    type: 'line',
+    data: {
+        labels: <?php echo json_encode($tanggal_peminjaman) ?>,
+        datasets: [{
+            label: 'Jumlah Peminjaman',
+            data: <?php echo json_encode($jumlah_peminjaman) ?>,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgb(181, 7, 250)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+    </script>
 <?php include '../../layout/footer.php'; ?>

@@ -73,8 +73,8 @@ if(isset($_POST['update'])){
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered tabelData" id="example1" width="100%" cellspacing="0">
-                <thead>
+            <table class="table table-bordered table-striped tabelData" id="example1" width="100%" cellspacing="0">
+                <thead class="thead-dark">
                     <tr>
                         <th style="width:1%;" class="text-center">No</th>
                         <th>Nama Kelas</th>
@@ -100,7 +100,7 @@ if(isset($_POST['update'])){
                         <td><?= $row['tingkat']?> <?= $row['nama_kelas'] ?></td>
                         <td>
                             <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= addslashes($row['nama_kelas']) ?>', '<?= addslashes($row['tingkat']) ?>', <?= $row['id_kelas'] ?>)" class="btn btn-primary"><i class="fas fa-edit"></i> edit</a>
-                            <a href="#"  class="btn btn-danger hapus-btn" data-idhapus = "<?= $row['id_kelas'] ?>"><i class="fas fa-trash"></i> hapus</a>
+                            <button type="button"  class="btn btn-danger hapus-btn" data-idhapus = "<?= $row['id_kelas'] ?>"><i class="fas fa-trash"></i> hapus</button>
                         </td>
                     </tr>   
                     <?php } ?>
@@ -158,9 +158,10 @@ if(isset($_POST['update'])){
         $('#id_kelas').val(id_kelas)
         $('#updateModal').modal("show")
     }
-    $(document).ready(function(){
+   
+   
         
-        $('.hapus-btn').on('click', function(){
+        $(document).on('click', '.hapus-btn', function(){
             const idhapus = $(this).data('idhapus')
                         Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -179,7 +180,6 @@ if(isset($_POST['update'])){
   
         });
         
-    })
 </script>
 <?php if (!empty($_SESSION['sukses'])) { ?>
     <script>

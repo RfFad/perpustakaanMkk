@@ -21,6 +21,7 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 $sukses = "";
 $nama = $_POST['nama'];
 $nis = $_POST['nis'];
+$jk = $_POST['jk'];
 $barcodeValue = $_POST['barcode'];
 $id_kelas = $_POST['id_kelas'];
 $id_jurusan = $_POST['id_jurusan'];
@@ -55,8 +56,8 @@ if ($count > 0) {
     exit();
 }
 
-$query = $koneksi->prepare("INSERT INTO siswa (nama, nis, barcode, id_kelas, id_jurusan, alamat, telepon, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-$query->bind_param("sssiisss", $nama, $nis, $barcodeValue, $id_kelas, $id_jurusan, $alamat, $telepon, $foto);
+$query = $koneksi->prepare("INSERT INTO siswa (nama, nis, jk, barcode, id_kelas, id_jurusan, alamat, telepon, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$query->bind_param("ssssiisss", $nama, $nis, $jk, $barcodeValue, $id_kelas, $id_jurusan, $alamat, $telepon, $foto);
 if($query->execute()){
     $_SESSION['sukses'] = "Berhasil menambahkan data siswa!";
     header('Location: index.php');

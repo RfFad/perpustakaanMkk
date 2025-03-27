@@ -122,6 +122,8 @@
     <!-- Page level plugins -->
     <script src="<?= BASE_URL ?>../public/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="<?= BASE_URL ?>../public/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
     <script src="<?= BASE_URL ?>../public/vendor/datatables-buttons/js/dataTables.buttons.min.js"></script>
 <script src="<?= BASE_URL ?>../public/vendor/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
     <!-- Page level custom scripts -->
@@ -136,12 +138,45 @@
     <script>
     $('.selectpicker').selectpicker();
     
-        $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "lengthChange": true,
-      "lengthMenu": [5, 10, 25, 50, 100],
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $("#example1").DataTable({
+    "responsive": true, 
+    "lengthChange": true, 
+    "autoWidth": false,
+    "lengthMenu": [10, 25, 50, 100, 150, 200],
+    "buttons": [
+        {
+            extend: "copy",
+            exportOptions: {
+                columns: ':not(:last-child)' // Mengecualikan kolom terakhir
+            }
+        },
+        {
+            extend: "csv",
+            exportOptions: {
+                columns: ':not(:last-child)'
+            }
+        },
+        {
+            extend: "excel",
+            exportOptions: {
+                columns: ':not(:last-child)'
+            }
+        },
+        {
+            extend: "pdf",
+            exportOptions: {
+                columns: ':not(:last-child)'
+            }
+        },
+        {
+            extend: "print",
+            exportOptions: {
+                columns: ':not(:last-child)'
+            }
+        },
+        "colvis"
+    ]
+}).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
     $("#example2").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,

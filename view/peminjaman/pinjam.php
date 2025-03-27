@@ -125,6 +125,7 @@ if ($action === "pinjam" && isset($_GET['nis'])) {
               </select>
             </div>
             <div class="confirm">
+            <a href="scan.php" id="kembali" class="btn btn-secondary">Kembali Scan</a>
               <button type="button" class="btn btn-primary" id="confirmButton">
                 confirm
               </button>
@@ -169,7 +170,8 @@ if ($action === "pinjam" && isset($_GET['nis'])) {
                 <label for="">Tanggal Pengembalian : </label>
                 <input type="date" name="tanggal_kembali" class="form-control">
               </div>
-              <button type="button" id="gantiBuku" class="btn btn-secondary">Ganti Buku</button>
+              <a href="scan.php" id="kembali" class="btn btn-secondary">Kembali Scan</a>
+              <button type="button" id="gantiBuku" class="btn btn-warning">Ganti Buku</button>
               <button type="submit" name="input_pinjam" class="btn btn-primary">Simpan</button>
             </div>
           </div>
@@ -212,7 +214,11 @@ if ($action === "pinjam" && isset($_GET['nis'])) {
             $("#penerbit").text(response.penerbit);
             $("#pengarang").text(response.pengarang);
             $("#tahunTerbit").text(response.tahun_terbit);
-            $("#fotoBuku").attr('src', `<?= BASE_URL ?>/asset/buku/${response.foto}`);
+            if(response.foto){
+              $("#fotoBuku").attr('src', `<?= BASE_URL ?>/asset/buku/${response.foto}`);
+            }else{
+              $("#fotoBuku").attr('src', `<?= BASE_URL ?>/asset/cover_buku.png`);
+            }
           } else {
           }
         },

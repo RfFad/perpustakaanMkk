@@ -77,8 +77,8 @@ if (isset($_POST['delete'])) {
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered tabelData" id="example1" width="100%" cellspacing="0">
-                <thead>
+            <table class="table table-bordered table-striped tabelData" id="example1" width="100%" cellspacing="0">
+                <thead class="thead-dark">
                     <tr>
                         <th>No</th>
                         <th>Nama Jurusan</th>

@@ -44,7 +44,7 @@ $rowSk = $resultSk->fetch_assoc();
   /* Bagian Tampilan Depan dan Belakang */
   .front, .back {
     width: 50%;
-    padding: 20px;
+    padding: 10px;
     box-sizing: border-box;
     position: relative;
     border-right: 1px solid #ddd; /* Untuk .front */
@@ -108,6 +108,20 @@ $rowSk = $resultSk->fetch_assoc();
   .header-section {
     display: flex;
     align-items: center;
+    
+  }
+  .header-back {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid black; 
+  }
+
+  .header-back img{
+    width: 30px;
+    height: 30px;
+    margin-right: 50px;
+    position: relative;
+    top: 10px;
   }
 
   .logo {
@@ -155,6 +169,13 @@ $rowSk = $resultSk->fetch_assoc();
     margin: 10px 0;
   }
 
+  .barcode-section p {
+    font-size: 10px;
+    text-align: center;
+    letter-spacing: 3px;
+    margin-top: -2px;
+  }
+
   .barcode {
     width: 110px;
     height: auto;
@@ -165,11 +186,46 @@ $rowSk = $resultSk->fetch_assoc();
     margin: 5px 0;
   }
 
-  .footer-info {
+/* Wrapper untuk barcode & footer agar sejajar */
+.bottom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 20px;
+}
+
+/* Footer Info */
+.footer-info {
     font-size: 12px;
     text-align: left;
-  }
+}
+
+.footer-info .info-atas {
+    margin-bottom: 35px;
+}
+
+.footer-info img {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    left: 0;
+    bottom: 10px; /* Sesuaikan dengan posisi yang diinginkan */
+}
+
+/* Barcode */
+.barcode-section img {
+    width: 120px; /* Sesuaikan ukuran barcode */
+    height: auto;
+}
+
+
+.footer-info p {
+    position: relative;
+    z-index: 2;
+    font-weight: bold;
+    line-height: 0.5
+}
+
   @media print {
   body {
     background: none;
@@ -238,18 +294,37 @@ $rowSk = $resultSk->fetch_assoc();
 
     <!-- Bagian Tampilan Belakang -->
     <div class="back">
-      <div class="barcode-section">
+    <div class="header-back" style="margin-bottom: 15px">
+        <img src="<?= BASE_URL ?>/asset/<?= $rowSk['foto'] ?>" alt="Logo Sekolah">
+        <div class="school-info">
+        <h2><?= $rowSk['nama_sekolah'] ?></h2>
+        <p><?= $rowSk['alamat_sekolah'] ?></p>
+        </div>
+      </div>
+      <div class="back-info" >
+        <p>- Kartu ini diterbitkan oleh Perpustakaan <?= $rowSk['nama_sekolah'] ?>.</p>
+        <p>- Harap mengembalikan kartu ini kepada pemiliknya jika Anda menemukannya.</p>
+      </div>
+      <div class="bottom-section">
+    <!-- Footer Info -->
+    <div class="footer-info"> 
+        <div class="info-atas">
+            <p><strong>Cirebon, 2025-01-21</strong></p>
+            <p><strong>Kepala Perpustakaan:</strong></p>
+        </div>
+        <div class="info-bawah">
+            <img src="<?= BASE_URL ?>/asset/ttd_kunjungan/ttd_1740815468.png" alt="Tanda Tangan">
+            <p><strong>Arrazi Kecil</strong></p>
+            <p><strong>Nip.198373737</strong></p>
+        </div>
+    </div>
+
+    <!-- Barcode -->
+    <div class="barcode-section">
         <img src="<?= BASE_URL ?>/asset/barcode_siswa/<?= $row['barcode'] ?>.png" alt="Barcode Anggota" class="barcode">
-      </div>
-      <div class="back-info">
-        <p>Kartu ini diterbitkan oleh Perpustakaan <?= $rowSk['nama_sekolah'] ?>.</p>
-        <p>Harap mengembalikan kartu ini kepada pemiliknya jika Anda menemukannya.</p>
-      </div>
-      <div class="footer-info">
-        <p><strong>Berlaku Hingga:</strong> 2027-01-21</p>
-        <p><strong>Penanggung Jawab:</strong> Dr. Hj. Weti Kurniawati, S.Pd., M.M.</p>
-        <p><strong>NIP:</strong> 197004241993012005</p>
-      </div>
+    </div>  
+</div>
+
     </div>
   </div>
   <?php

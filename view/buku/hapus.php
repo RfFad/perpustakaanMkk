@@ -33,5 +33,6 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
         $_SESSION['error'] = "Gagal menghapus data!";
     }
     $query->close();
+    $koneksi->close();
 
 ?>

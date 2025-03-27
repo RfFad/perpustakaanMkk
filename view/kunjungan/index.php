@@ -9,11 +9,13 @@ if(!isset($_SESSION['username'])){
     echo '<script language="javascript">alert("Harap anda login terlebih dahulu"); document.location="'. $url .'"</script>';
     exit;
   }
-if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
-    $urlBack = BASE_URL . "/view/dashboard/index.php";
-    echo '<script language="javascript">alert("Anda tidak bisa mengakses halaman ini, karena anda bukan admin!"); document.location="' . $urlBack . '"</script>';
-    exit;
-}
+  $allowed_role = ['admin', 'operator'];
+  if(!isset($_SESSION['role']) || !in_array($_SESSION['role'], $allowed_role)){
+      session_destroy();
+      echo "<script>alert('Akses ditolak! Anda tidak memiliki izin.'); window.location.href='../../auth/login.php';</script>";
+      exit();
+  }
+  
 $sukses = "";
 $error = "";
 
@@ -280,10 +282,8 @@ if(isset($_POST['update'])){
         $('#alamat').text(alamat)
         $('#infoModal').modal("show")
     }
-    $(document).ready(function(){
-        
-        $('.hapus-btn').on('click', function(){
-            const idhapus = $(this).data('idhapus')
+    $(document).on('click', '.hapus-btn', function(){
+        const idhapus = $(this).data('idhapus')
                         Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Anda tidak akan dapat mengembalikan data ini!",
@@ -298,9 +298,6 @@ if(isset($_POST['update'])){
                     window.location.href = `<?= BASE_URL ?>/view/kunjungan/index.php?action=hapus&id=${idhapus}`;
                 }
                 });
-  
-        });
-        
     })
 </script>
 <?php if (!empty($_SESSION['sukses'])) { ?>

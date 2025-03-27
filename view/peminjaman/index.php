@@ -162,6 +162,7 @@ function Hari($tanggal) {
                         <th>Buku</th>
                         <th>Tanggal Peminjaman</th>
                         <th>Tanggal Pengembalian</th>
+                        <th>Petugas</th>
                         <th>Status</th>
                         <th style="width:10%">Action</th>
                     </tr>
@@ -174,18 +175,21 @@ function Hari($tanggal) {
                         <th>Buku</th>
                         <th>Tanggal Peminjaman</th>
                         <th>Tanggal Pengembalian</th>
+                        <th>Petugas</th>
                         <th>Status</th>
                         <th style="width:17%">Action</th>
                     </tr>
                 </tfoot>
                 <tbody>
                     <?php 
-                    $queryBase = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas 
+                    $queryBase = "SELECT pj.*, b.judul AS nama_buku, b.barcode AS barcode_buku, s.nama AS nama_siswa, s.telepon, s.id_siswa, s.foto AS foto_siswa, s.nis, CONCAT(k.tingkat, ' ', j.singkatan, ' ', k.nama_kelas) AS nama_kelas, us.nama AS nama_user 
                                   FROM peminjaman pj 
                                   JOIN buku b ON pj.id_buku = b.id_buku 
                                   JOIN siswa s ON pj.id_siswa = s.id_siswa 
                                   JOIN kelas k ON s.id_kelas = k.id_kelas 
-                                  JOIN jurusan j ON s.id_jurusan = j.id_jurusan ";
+                                  JOIN jurusan j ON s.id_jurusan = j.id_jurusan
+                                  JOIN admin us ON pj.id_admin = us.id_admin
+                                   ";
                     
                     $whereClauses = [];
                     if(isset($_GET['option']) && isset($_GET['status'])){
@@ -246,13 +250,14 @@ function Hari($tanggal) {
                         <td><?= htmlspecialchars($row['nama_buku']) ?></td>
                         <td><?= htmlspecialchars($row['tanggal_pinjam']) ?>, <?= Hari($row['tanggal_pinjam']) ?></td>
                         <td><?= htmlspecialchars($row['tanggal_kembali']) ?>, <?= Hari($row['tanggal_kembali']) ?></td>
+                        <td><?= htmlspecialchars($row['nama_user']) ?></td>
                         <td><span class="badge <?= $row['status'] === 'Dipinjam' ? 'badge-warning' : ($row['status'] === 'Dikembalikan' ? 'badge-success' : 'badge-danger') ?>">
                             <?= $row['status'] ?>
                             </span>
                         </td>
                         <td class="text-center">
                             <a href="#" data-toggle="modal" onclick="showModalUpdate('<?= $row['id_siswa'] ?>', '<?= $row['id_peminjaman'] ?>', '<?= $row['nis'] ?>', '<?= $row['telepon'] ?>', '<?= $row['nama_siswa'] ?>', '<?= $row['foto_siswa'] ?>', '<?= $row['nama_kelas'] ?>', '<?= $row['barcode_buku'] ?>', '<?= $row['tanggal_kembali'] ?>', '<?= $row['status'] ?>')" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> edit</a>
-                            <a href="#"  class="btn btn-danger btn-sm hapus-btn" data-idhapus = "<?= $row['id_peminjaman'] ?>"><i class="fas fa-trash"></i> hapus</a>
+                            <button type="button" class="btn btn-danger btn-sm hapus-btn" data-idhapus = "<?= $row['id_peminjaman'] ?>"><i class="fas fa-trash"></i> hapus</button>
                         </td>
                     </tr>   
                     <?php } $result->close() ?>
@@ -408,7 +413,11 @@ function Hari($tanggal) {
             $("#penerbit").text(response.penerbit);
             $("#pengarang").text(response.pengarang);
             $("#tahunTerbit").text(response.tahun_terbit);
+            if(response.foto){
             $("#fotoBuku").attr('src', `<?= BASE_URL ?>/asset/buku/${response.foto}`);
+            }else{
+                $("#fotoBuku").attr('src', `<?= BASE_URL ?>/asset/cover_buku.png`);
+            }
           } else {
           }
         },
@@ -431,6 +440,25 @@ function Hari($tanggal) {
         }
         $("#updateModal").modal("show")
     }
+    //hapus
+    $(document).on('click', '.hapus-btn', function(){
+        const idhapus = $(this).data('idhapus')
+                        Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak akan dapat mengembalikan data ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `<?= BASE_URL ?>/view/peminjaman/index.php?action=hapus&id=${idhapus}`;
+                }
+                });
+
+    })
     $(document).ready(function(){
      
     // $.ajax({
@@ -471,27 +499,6 @@ function Hari($tanggal) {
         },
       });
     });
-
-
-        $('.hapus-btn').on('click', function(){
-            const idhapus = $(this).data('idhapus')
-                        Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Anda tidak akan dapat mengembalikan data ini!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = `<?= BASE_URL ?>/view/peminjaman/index.php?action=hapus&id=${idhapus}`;
-                }
-                });
-  
-        });
-        
     })
 </script>
 <?php if (!empty($_SESSION['sukses'])) { ?>

@@ -27,9 +27,10 @@ if(isset($_POST['import'])){
         if($index == 0) continue;
         $nis = $row[0];
         $nama = $row[1];
-        $kelas = $row[2];
-        $telepon = $row[3];
-        $alamat = $row[4];
+        $jk = $row[2];
+        $kelas = $row[3];
+        $telepon = $row[4];
+        $alamat = $row[5];
 
         $generator = new BarcodeGeneratorPNG();
             $barcode = $generator->getBarcode($nis, $generator::TYPE_CODE_128);
@@ -84,8 +85,8 @@ if(isset($_POST['import'])){
             continue;
         }
 
-        $insertQuery = $koneksi->prepare("INSERT INTO siswa (nama, nis, id_kelas, id_jurusan, alamat, telepon, barcode)VALUES(?, ?, ?, ?, ?, ?, ?)");
-        $insertQuery->bind_param("ssiisss", $nama, $nis, $id_kelas, $id_jurusan, $alamat, $telepon, $nis);
+        $insertQuery = $koneksi->prepare("INSERT INTO siswa (nama, nis, jk, id_kelas, id_jurusan, alamat, telepon, barcode)VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+        $insertQuery->bind_param("sssiisss", $nama, $nis, $jk, $id_kelas, $id_jurusan, $alamat, $telepon, $nis);
         $insertQuery->execute();
         $insertQuery->close();
     }

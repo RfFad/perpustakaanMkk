@@ -136,6 +136,7 @@ if(isset($_GET['action'])){
         </div>
       </div>
       <div class="col-12 text-center">
+      <a href="index.php" class="btn btn-secondary">kembali</a>
         <button type="button" class="btn btn-primary" id="confirm">
           Confirm
         </button>
@@ -205,6 +206,7 @@ if(isset($_GET['action'])){
           <button type="button" class="btn btn-secondary mt-3 back" id="back">
             Kembali
           </button>
+          
         </div>
       </div>
     </div>
@@ -277,6 +279,9 @@ if(isset($_GET['action'])){
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script>
   $(document).ready(function () {
+    $('#scanUlang').on('click', function(){
+      $("#barcodeModal").modal("hide")
+    })
     $(".card-option").on("click", function () {
       $(".card-option").removeClass("selected");
       $(this).addClass("selected");

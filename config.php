@@ -1,11 +1,12 @@
+
 <?php
-define('BASE_URL', 'http://localhost/perpustakaanMkk');
+define('BASE_URL', 'https://perpustakaan-neper-one.vercel.app/perpustakaanMkk');
 
 // Koneksi ke database
-$host = 'localhost';    // Host database
-$user = 'root';         // Username database
-$pass = '';             // Password database (kosong untuk XAMPP)
-$db   = 'wb_perpus';    // Nama database Anda
+$host = 'bebodljqmcdzswxl1o6m-mysql.services.clever-cloud.com';    // Host database
+$user = 'uzg3tuvtphtnnhxb';         // Username database
+$pass = 'mmdZfLIzvlhfCfBRKrvB';             // Password database (kosong untuk XAMPP)
+$db   = 'bebodljqmcdzswxl1o6m';    // Nama database Anda
 
 $conn = new mysqli($host, $user, $pass, $db);
 

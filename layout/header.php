@@ -33,6 +33,8 @@ session_regenerate_id(true);
 
     <!-- Custom styles for this page -->
     <link href="<?= BASE_URL ?>../public/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <!-- DataTables Responsive (Plus Mode) -->
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
 
 </head>
@@ -104,7 +106,7 @@ session_regenerate_id(true);
                 <div id="kunjunganPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="<?= BASE_URL ?>/view/kunjungan/index.php">Data Pengunjung</a>
-                        <a class="collapse-item" href="<?= BASE_URL ?>/view/junjungan/insert.php">Insert Kunjungan</a>
+                        <a class="collapse-item" href="<?= BASE_URL ?>/view/kunjungan/insert.php">Insert Kunjungan</a>
                     </div>
                 </div>
           </li>
@@ -215,7 +217,9 @@ session_regenerate_id(true);
                         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                             <i class="fa fa-bars"></i>
                         </button>
-                    
+                    <div class="title-nav">
+                    <h6 class="m-0 font-weight-bold text-primary">Sistem Perpustakaan Neper</h6>
+                    </div>
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
